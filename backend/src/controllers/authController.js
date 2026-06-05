@@ -1,5 +1,6 @@
 import { prisma } from "../config/db.js";
 import bcrypt from "bcryptjs";
+import { generateToken } from "../utils/generateToken.js";
 
 const register = async (req, res) => {
     try {
@@ -30,6 +31,9 @@ const register = async (req, res) => {
             },
         });
 
+        // Generate JWT Token
+        const token = generateToken(user.id, res);
+
         res.status(201).json({
             status: "success",
             data: {
@@ -39,7 +43,8 @@ const register = async (req, res) => {
                     last_name: last_name,
                     email: email
                 }
-            }
+            },
+            token,
         });
     } catch (err) {
         console.error(err);
@@ -49,7 +54,51 @@ const register = async (req, res) => {
 
 };
 
+const login = async (req, res) => {
+    const { email, password } = req.body;
 
+    try {
+        // Check if user email exists in the table
+        const user = await prisma.user.findUnique({
+            where: {email: email},
+        });
+
+        if (!user) {
+            return res
+            .status(401)
+            .json({error: "Invalid email or password"});
+        }
+
+        // Verify Password
+        const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+
+        if (!isPasswordValid) {
+            return res
+            .status(401)
+            .json({error: "Invalid email or password"});
+        }
+
+        // Generate JWT Token
+        const token = generateToken(user.id, res);
+
+        res.status(201).json({
+            status: "success",
+            data: {
+                user: {
+                    id: user.id,
+                    email: email
+                }
+            },
+            token,
+        });
+
+
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+};
 
 
 export { register, login };
