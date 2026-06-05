@@ -5,16 +5,20 @@ import { connectDB, disconnectDB } from "./config/db.js";
 
 // Import Routes
 import userRoutes from './routes/userRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 config();
 connectDB();
 
 const app = express();
 
-
+// Body parsing middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // API Routes
 app.use("/users", userRoutes);
+app.use("/auth", authRoutes);
 
 const PORT = 5001;
 app.listen(PORT, () => {
