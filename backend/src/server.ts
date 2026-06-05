@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Application } from "express";
 import { config } from "dotenv";
 import { connectDB, disconnectDB } from "./config/db.js";
 
@@ -10,7 +10,7 @@ import authRoutes from './routes/authRoutes.js';
 config();
 connectDB();
 
-const app = express();
+const app: Application = express();
 
 // Body parsing middlewares
 app.use(express.json());
@@ -20,13 +20,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/users", userRoutes);
 app.use("/auth", authRoutes);
 
-const PORT = 5001;
-app.listen(PORT, () => {
+const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5001;
+const server = app.listen(PORT, () => {
     console.log(`Server running on PORT ${PORT}`);
 });
 
 // Handle unhandled promise rejections (e.g., database connection errors)
-process.on("unhandledRejection", (err) => {
+process.on("unhandledRejection", (err: Error) => {
     console.error("Unhandled Rejection:", err);
     server.close(async () => {
         await disconnectDB();
@@ -35,7 +35,7 @@ process.on("unhandledRejection", (err) => {
 });
 
 // Handle uncaught exceptions
-process.on("uncaughtException", async (err) => {
+process.on("uncaughtException", async (err: Error) => {
     console.error("Uncaught Exception:", err);
     server.close(async () => {
         await disconnectDB();
@@ -44,8 +44,8 @@ process.on("uncaughtException", async (err) => {
 });
 
 // Graceful shutdown
-process.on("SIGTERM", async () => {
-    console.error("SIGTERM received, shutting down gracefully");
+process.on("SIGTERM", () => {
+    console.log("SIGTERM received, shutting down gracefully");
     server.close(async () => {
         await disconnectDB();
         process.exit(0);
