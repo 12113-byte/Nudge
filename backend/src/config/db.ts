@@ -2,14 +2,14 @@ import { config } from "dotenv";
 config(); // load env first
 
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../generated/prisma/client";
 
 const connectionString = process.env.DATABASE_URL as string;
 const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({
   adapter,
   log:
-    process.env.NODE_ENV === "development" 
+    process.env.NODE_ENV === "development"
     ? ["query", "error", "warn"]
     : ["error"]
 });
