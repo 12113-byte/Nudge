@@ -1,14 +1,17 @@
-import { AppText } from '@/components/AppText';
-import TopNavBar from '@/components/TopNavBar';
-import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { Text, useTheme } from 'react-native-paper';
 
-export default function App() {
+export default function HomeScreen() {
+  const theme = useTheme();
+
   return (
-    <View style={styles.container}>
-      <TopNavBar />
+    // Use theme.colors.background directly in the style
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={styles.content}>
-      <AppText style={styles.text}>Hello Team</AppText>
+        {/* Use theme.colors.primary and built-in variants */}
+        <Text variant="headlineMedium" style={{ color: theme.colors.primary }}>
+          Hello Team
+        </Text>
       </View>
     </View>
   );
@@ -17,15 +20,10 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'stretch',
   },
   content: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
   },
 });

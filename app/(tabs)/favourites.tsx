@@ -1,14 +1,18 @@
-import { AppText } from '@/components/AppText';
-import TopNavBar from '@/components/TopNavBar';
 import { StyleSheet, View } from 'react-native';
+import { Text, useTheme } from 'react-native-paper';
 
-export default function ExploreScreen() {
+export default function HomeScreen() {
+  const theme = useTheme();
+
   return (
-    <View style={styles.container}>
-        <TopNavBar />
-        <View style={styles.content}>
-      <AppText style={styles.text}>Favourites Page Content Goes Here!</AppText>
-        </View>
+    // Use theme.colors.background directly in the style
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <View style={styles.content}>
+        {/* Use theme.colors.primary and built-in variants */}
+        <Text variant="headlineMedium" style={{ color: theme.colors.primary }}>
+          Favourites
+        </Text>
+      </View>
     </View>
   );
 }
@@ -16,15 +20,10 @@ export default function ExploreScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'stretch',
   },
-    content: {
+  content: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
   },
 });
