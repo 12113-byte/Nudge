@@ -1,6 +1,5 @@
 import { AppText } from '@/components/AppText';
 import TopNavBar from '@/components/TopNavBar';
-import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 export default function App() {
