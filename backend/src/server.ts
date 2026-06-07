@@ -1,6 +1,7 @@
 import express, { Application } from "express";
 import { config } from "dotenv";
 import { connectDB, disconnectDB } from "./config/db.js";
+import errorHandler from './middleware/errorHandler.js';
 
 
 // Import Routes
@@ -51,3 +52,6 @@ process.on("SIGTERM", () => {
         process.exit(0);
     });
 });
+
+
+app.use(errorHandler);
