@@ -1,57 +1,78 @@
-import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useNavigation, usePathname, useRouter } from 'expo-router';
+import { Image, StyleSheet, View } from 'react-native';
+import { Appbar, useTheme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TopNavBar() {
+    const router = useRouter();
+    const navigation = useNavigation();
+    const theme = useTheme();
     const insets = useSafeAreaInsets();
+    const pathname = usePathname();
+
+    const isProfileBranch = pathname && pathname.includes('/profile');
+
     return (
-        <View style={[styles.headerContainer,
-            { paddingTop: insets.top + 12 }
-        ]}>
-            <View style={styles.brandGroup}>
-                <Image source={require('@/assets/images/logo_nudge.png')} style={styles.brandIcon} />
+        <View style={[styles.container, { paddingTop: insets.top, backgroundColor: theme.colors.background }]}>
+            {/* ROW 1: Logo and Profile Button */}
+            <View style={styles.mainRow}>
+                <Image source={require('@/assets/images/logo_nudge.png')} style={styles.logo} />
+                
+                {!isProfileBranch && (
+                    <Appbar.Action 
+                        icon="account-outline" 
+                        size={24} 
+                        color="#ffffff"
+                        containerColor={theme.colors.onPrimary}
+                        style={styles.profileCircle}
+                        onPress={() => router.push('/profile')} 
+                    />
+                )}
             </View>
 
-            <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => console.log('Profile Pressed')}
-                style={styles.profileButton}>
-                    <Ionicons name="person-outline" size={30} color="#ffffff" />
-                </TouchableOpacity>
+            {/* ROW 2: Back Button (Only visible on sub-pages) */}
+            {isProfileBranch && (
+                <View style={styles.subRow}>
+                    <Appbar.BackAction 
+                        onPress={() => navigation.canGoBack() ? navigation.goBack() : router.replace('/(tabs)')} 
+                        color={theme.colors.primary}
+                        style={styles.backButton}
+                        containerColor={theme.colors.onPrimary}
+                    />
+                </View>
+            )}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    headerContainer: {
+    container: {
+        paddingHorizontal: 16,
+        paddingBottom: 8,
+    },
+    mainRow: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: '#142140',
-        paddingHorizontal: 24,
-        paddingTop: 20,
+        height: 60,
     },
-    brandGroup: {
-        flexDirection: 'row',
-        alignItems: 'center',
+    subRow: {
+        alignItems: 'flex-start', // Keeps the back button left-aligned
     },
-    brandIcon: {
-        width: 55,
-        height: 55,
-        marginRight: 8,
+    logo: {
+        width: 45,
+        height: 45,
     },
-    brandName: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        letterSpacing: 0.5,
-    },
-    profileButton: {
-        width: 50,
-        height: 50,
+    profileCircle: {
         borderRadius: 25,
-        backgroundColor: '#37425c',
-        justifyContent: 'center',
-        alignItems: 'center',
-    }
+        width: 45,
+        height: 45,
+        margin: 0,
+    },
+    backButton: {
+        margin: 0,
+        height: 45,
+        width: 45,
+        borderRadius: 25,
+    },
 });
