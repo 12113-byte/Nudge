@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Tabs } from 'expo-router';
-import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 const MyTheme = {
@@ -24,6 +23,7 @@ export default function RootLayout() {
 export function TabLayout() {
   return (
     <Tabs
+    initialRouteName='index'          // app starts with Home Screen
       screenOptions={{
         headerShown: false,           // Hides the header for all tabs
         tabBarActiveTintColor: '#FF6B6B', // Changes active icon color (Blue)
@@ -34,9 +34,11 @@ export function TabLayout() {
           backgroundColor: '#2a3652',
           borderTopWidth: 0,              // Removes border on iOS
           elevation: 0,                   // Removes shadow on Android
+          height: 85,
+          paddingTop: 10,
         }
       }}>
-      
+
       {/* Maps/Explore Tab */} 
       <Tabs.Screen
         name="explore"
