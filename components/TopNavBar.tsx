@@ -10,7 +10,9 @@ export default function TopNavBar() {
     const insets = useSafeAreaInsets();
     const pathname = usePathname();
 
-    const isProfileBranch = pathname && pathname.includes('/profile');
+    const subPage = ['/profile', '/bookings', '/reviews', '/contactUs', '/settings', '/favourites']
+
+    const isSubPage = subPage.includes(pathname);
 
     return (
         <View style={[styles.container, { paddingTop: insets.top, backgroundColor: theme.colors.background }]}>
@@ -18,7 +20,7 @@ export default function TopNavBar() {
             <View style={styles.mainRow}>
                 <Image source={require('@/assets/images/logo_nudge.png')} style={styles.logo} />
                 
-                {!isProfileBranch && (
+                {!isSubPage && (
                     <Appbar.Action 
                         icon="account-outline" 
                         size={24} 
@@ -31,7 +33,7 @@ export default function TopNavBar() {
             </View>
 
             {/* ROW 2: Back Button (Only visible on sub-pages) */}
-            {isProfileBranch && (
+            {isSubPage && (
                 <View style={styles.subRow}>
                     <Appbar.BackAction 
                         onPress={() => navigation.canGoBack() ? navigation.goBack() : router.replace('/(tabs)')} 
