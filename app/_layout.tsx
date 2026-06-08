@@ -1,24 +1,41 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import TopNavBar from '@/components/TopNavBar';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import {
+  MD3DarkTheme as PaperDefaultTheme,
+  PaperProvider
+} from 'react-native-paper';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
 
-export const unstable_settings = {
-  anchor: '(tabs)',
+const theme = {
+  ...PaperDefaultTheme,
+  colors: {
+    ...PaperDefaultTheme.colors,
+    background: '#142140',
+    primary: '#FF6B6B',
+    tertiary: '#8E8E93',
+    onPrimary: '#2a3652'
+  }
+}
+
+export const unstable_settings = { // unstable_ prefix means API is not finalised yet, needs change later
+  anchor: '(tabs)', // default starting point
 };
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    <PaperProvider theme={theme}>
+      <Stack screenOptions={{
+        header: () => <TopNavBar /> }}> 
+        <Stack.Screen name="(tabs)" options={{ headerShown: true }} />
+        <Stack.Screen name="login" options={{ headerShown: false }} />
+        <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
+        <Stack.Screen name="sign-up" options={{ headerShown: false, animation: 'none' }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+        <Stack.Screen name="profile" options={{ headerShown: true}} />
       </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+      <StatusBar style="light" />
+    </PaperProvider>
   );
 }
