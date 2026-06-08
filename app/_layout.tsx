@@ -7,7 +7,6 @@ import {
 } from 'react-native-paper';
 import 'react-native-reanimated';
 
-
 const theme = {
   ...PaperDefaultTheme,
   colors: {
