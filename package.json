@@ -44,15 +44,10 @@
   },
   "devDependencies": {
     "@types/react": "~19.1.0",
-<<<<<<< HEAD
-    "eslint": "^9.25.0",
-    "eslint-config-expo": "~10.0.0",
-=======
     "babel-preset-expo": "^56.0.14",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "tailwindcss": "^3.4.19",
->>>>>>> a5173425b49c49056d53c1127e3745a0a3d58675
     "typescript": "~5.9.2"
   },
   "private": true
