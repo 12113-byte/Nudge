@@ -10,7 +10,7 @@ export default function HomeScreen() {
       <View style={styles.content}>
         {/* Use theme.colors.primary and built-in variants */}
         <Text variant="headlineMedium" style={{ color: theme.colors.primary }}>
-          Explore
+          Reviews
         </Text>
       </View>
     </View>

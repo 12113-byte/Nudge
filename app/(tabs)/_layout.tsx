@@ -1,12 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 
 export default function TabLayout() {
   const theme = useTheme();
 
+  // eslint-disable-next-line react/display-name
   const renderTabIcon = (name: string) => ({ color, focused }: { color: string; focused: boolean }) => (
     <View style={styles.iconContainer}>
       <Ionicons size={28}
@@ -19,6 +19,7 @@ export default function TabLayout() {
 
 return (
     <Tabs
+    initialRouteName='index'          // app starts with Home Screen
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: theme.colors.primary,
