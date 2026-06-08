@@ -1,13 +1,14 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, TextInput, useTheme } from 'react-native-paper';
 
 export default function LoginScreen() {
     const [userType, setUserType] = useState("customer");
+    const theme = useTheme();
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
             {/* Top Navigation */}
             <View style={styles.topNav}>
                 <TouchableOpacity onPress={() => setUserType("customer")}>
@@ -29,8 +30,8 @@ export default function LoginScreen() {
             </View>
 
             {/* Log In "Toggler" */}
-            <View style={styles.toggleContainer}>
-                <View style={[styles.toggleButton, styles.toggleActive]}>
+            <View style={[styles.toggleContainer, { borderColor: theme.colors.primary, backgroundColor: theme.colors.onPrimary }]}>
+                <View style={[styles.toggleButton, styles.toggleActive, { backgroundColor: theme.colors.primary }]}>
                     <Text style={styles.toggleText}>Log In</Text>
                 </View>
                 <TouchableOpacity
@@ -47,30 +48,30 @@ export default function LoginScreen() {
                 label="Email"
                 mode="outlined"
                 style={styles.input}
-                outlineColor="#FF6B6B"
-                activeOutlineColor="#FF6B6B"
+                outlineColor={theme.colors.primary}
+                activeOutlineColor={theme.colors.primary}
                 />
                 <TextInput
                 label="Password"
                 mode="outlined"
                 secureTextEntry
                 style={styles.input}
-                outlineColor="#FF6B6B"
-                activeOutlineColor="#FF6B6B"
+                outlineColor={theme.colors.primary}
+                activeOutlineColor={theme.colors.primary}
                 />
             </View>
 
             {/* Forgot Password link */}
             <TouchableOpacity style={styles.forgotPasswordLink}>
                 {/* onPress={() => router.push("/forgot-password")} TODO; add when link to it exists*/}
-                <Text style={styles.forgotPasswordLinkText}>Forgot Password?</Text>
+                <Text style={[styles.forgotPasswordLinkText, { color: theme.colors.primary }]}>Forgot Password?</Text>
             </TouchableOpacity>
 
             {/* Log In Button */}
             <View style={styles.loginButtonContainer}>
                 <Button
                     mode="contained"
-                    style={styles.loginButton}
+                    buttonColor={theme.colors.primary}
                     labelStyle={styles.loginButtonText}
                     onPress={() => {}} // TODO: add login logic
                     >
