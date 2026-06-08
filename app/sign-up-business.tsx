@@ -1,10 +1,8 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button, TextInput, useTheme } from 'react-native-paper';
 
 export default function SignUpScreen() {
-    const [userType, setUserType] = useState("customer");
     const theme = useTheme();
 
     return (
@@ -13,12 +11,12 @@ export default function SignUpScreen() {
             contentContainerStyle={styles.scrollContent}>
             {/* Top Navigation */}
             <View style={styles.topNav}>
-                <TouchableOpacity onPress={() => setUserType("customer")}>
-                    <Text style={[styles.topNavText, userType === "customer" && styles.topNavActive]}>Customer</Text>
+                <TouchableOpacity onPress={() => router.push("/sign-up-customer")} >
+                    <Text style={styles.topNavText}>Customer</Text>
                 </TouchableOpacity>
                 <Text style={styles.topNavSeparator}> | </Text>
-                <TouchableOpacity onPress={() => setUserType("business")}>
-                    <Text style={[styles.topNavText, userType === "business" && styles.topNavActive]}>Business</Text>
+                <TouchableOpacity onPress={() => {}}>
+                    <Text style={[styles.topNavText, styles.topNavActive]}>Business</Text>
                 </TouchableOpacity>
             </View>
 
@@ -35,11 +33,11 @@ export default function SignUpScreen() {
             <View style={[styles.toggleContainer, { borderColor: theme.colors.primary, backgroundColor: theme.colors.onPrimary }]}>
                 <TouchableOpacity
                     style={styles.toggleButton}
-                    onPress={() => router.push("/login")}
+                    onPress={() => router.push({ pathname: "/login", params: { userType: "business" } })} // detects login for business
                 >
                     <Text style={styles.toggleText}>Log In</Text>
             </TouchableOpacity>
-                <View style={[styles.toggleButton, styles.toggleActive, { backgroundColor: theme.colors.primary }]}>
+            <View style={[styles.toggleButton, styles.toggleActive, { backgroundColor: theme.colors.primary }]}>
                     <Text style={styles.toggleText}>Sign Up</Text>
                 </View>
             </View>
@@ -61,7 +59,28 @@ export default function SignUpScreen() {
                 activeOutlineColor={theme.colors.primary}
                 />
                 <TextInput
-                label="Email"
+                label="Company Name"
+                mode="outlined"
+                style={styles.input}
+                outlineColor={theme.colors.primary}
+                activeOutlineColor={theme.colors.primary}
+                />
+                <TextInput
+                label="Business Email"
+                mode="outlined"
+                style={styles.input}
+                outlineColor={theme.colors.primary}
+                activeOutlineColor={theme.colors.primary}
+                />
+                <TextInput
+                label="Business Phone"
+                mode="outlined"
+                style={styles.input}
+                outlineColor={theme.colors.primary}
+                activeOutlineColor={theme.colors.primary}
+                />
+                <TextInput
+                label="ABN"
                 mode="outlined"
                 style={styles.input}
                 outlineColor={theme.colors.primary}

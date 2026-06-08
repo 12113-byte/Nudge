@@ -1,23 +1,22 @@
-import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { router } from 'expo-router';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button, TextInput, useTheme } from 'react-native-paper';
 
-export default function LoginScreen() {
-    const { userType: initalUserType } = useLocalSearchParams(); // detects userType and redirects to correct screen
-    const [userType, setUserType] = useState((initalUserType as string) || "customer");
+export default function SignUpScreen() {
     const theme = useTheme();
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <ScrollView
+            style={[styles.container, { backgroundColor: theme.colors.background }]}
+            contentContainerStyle={styles.scrollContent}>
             {/* Top Navigation */}
             <View style={styles.topNav}>
-                <TouchableOpacity onPress={() => setUserType("customer")}>
-                    <Text style={[styles.topNavText, userType === "customer" && styles.topNavActive]}>Customer</Text>
+                <TouchableOpacity onPress={() => {}}>
+                    <Text style={[styles.topNavText, styles.topNavActive]}>Customer</Text>
                 </TouchableOpacity>
                 <Text style={styles.topNavSeparator}> | </Text>
-                <TouchableOpacity onPress={() => setUserType("business")}>
-                    <Text style={[styles.topNavText, userType === "business" && styles.topNavActive]}>Business</Text>
+                <TouchableOpacity onPress={() => router.push("/sign-up-business")}>
+                    <Text style={styles.topNavText}>Business</Text>
                 </TouchableOpacity>
             </View>
 
@@ -30,24 +29,35 @@ export default function LoginScreen() {
                 <Text style={styles.logoText}>Nudge</Text>
             </View>
 
-            {/* Sign Up Link */}
+            {/* Log In Link */}
             <View style={[styles.toggleContainer, { borderColor: theme.colors.primary, backgroundColor: theme.colors.onPrimary }]}>
-                <View style={[styles.toggleButton, styles.toggleActive, { backgroundColor: theme.colors.primary }]}>
-                    <Text style={styles.toggleText}>Log In</Text>
-                </View>
                 <TouchableOpacity
-                style={styles.toggleButton}
-                onPress={() => userType === "business"
-                    ? router.push("/sign-up-business")
-                    : router.push("/sign-up-customer")
-                }
+                    style={styles.toggleButton}
+                    onPress={() => router.push({ pathname: "/login", params: { userType: "customer" } })} // detects login for customer
                 >
+                    <Text style={styles.toggleText}>Log In</Text>
+            </TouchableOpacity>
+                <View style={[styles.toggleButton, styles.toggleActive, { backgroundColor: theme.colors.primary }]}>
                     <Text style={styles.toggleText}>Sign Up</Text>
-                </TouchableOpacity>
+                </View>
             </View>
 
             {/* Input Fields */}
             <View style={styles.inputContainer}>
+                <TextInput
+                label="First Name"
+                mode="outlined"
+                style={styles.input}
+                outlineColor={theme.colors.primary}
+                activeOutlineColor={theme.colors.primary}
+                />
+                <TextInput
+                label="Last Name"
+                mode="outlined"
+                style={styles.input}
+                outlineColor={theme.colors.primary}
+                activeOutlineColor={theme.colors.primary}
+                />
                 <TextInput
                 label="Email"
                 mode="outlined"
@@ -63,23 +73,25 @@ export default function LoginScreen() {
                 outlineColor={theme.colors.primary}
                 activeOutlineColor={theme.colors.primary}
                 />
+                <TextInput
+                label="Confirm Password"
+                mode="outlined"
+                secureTextEntry
+                style={styles.input}
+                outlineColor={theme.colors.primary}
+                activeOutlineColor={theme.colors.primary}
+                />
             </View>
 
-            {/* Forgot Password link */}
-            <TouchableOpacity style={styles.forgotPasswordLink}>
-                {/* onPress={() => router.push("/forgot-password")} TODO; add when link to it exists*/}
-                <Text style={[styles.forgotPasswordLinkText, { color: theme.colors.primary }]}>Forgot Password?</Text>
-            </TouchableOpacity>
-
-            {/* Log In Button */}
-            <View style={styles.loginButtonContainer}>
+            {/* Sign Up Button */}
+            <View style={styles.signUpButtonContainer}>
                 <Button
                     mode="contained"
                     buttonColor={theme.colors.primary}
-                    labelStyle={styles.loginButtonText}
+                    labelStyle={styles.signUpButtonText}
                     onPress={() => {}} // TODO: add login logic
                     >
-                        Log In
+                        Create Account
                 </Button>
             </View>
 
@@ -89,11 +101,14 @@ export default function LoginScreen() {
             </View>
 
 
-        </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
+    scrollContent: {
+        paddingBottom: 100,
+    },
     container: {
         flex: 1,
         backgroundColor: "#142140",
@@ -161,30 +176,19 @@ const styles = StyleSheet.create({
     input: {
         backgroundColor: "#142140",
     },
-    forgotPasswordLink: {
-        alignItems: "flex-end",
-        marginTop: 8,
-        marginHorizontal: 24,
-    },
-    forgotPasswordLinkText: {
-        color: "#FF6B6B",
-        fontSize: 14,
-    },
-    loginButtonContainer: {
+    signUpButtonContainer: {
         marginHorizontal: 24,
         marginTop: 24,
     },
-    loginButtonText: {
+    signUpButtonText: {
         color: "#ffffff",
         fontWeight: "bold",
         fontSize: 16,
     },
     bottomNav: {
-        position: "absolute",
-        bottom: 24,
-        left: 0,
-        right: 0,
         alignItems: "center",
+        marginTop: 24,
+        paddingBottom: 24,
     },
     bottomNavText: {
         color: "#ffffff",
