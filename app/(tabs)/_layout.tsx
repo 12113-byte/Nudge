@@ -6,6 +6,7 @@ import { useTheme } from 'react-native-paper';
 export default function TabLayout() {
   const theme = useTheme();
 
+  // eslint-disable-next-line react/display-name
   const renderTabIcon = (name: string) => ({ color, focused }: { color: string; focused: boolean }) => (
     <View style={styles.iconContainer}>
       <Ionicons size={28}
