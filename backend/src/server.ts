@@ -19,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 // API Routes
 app.use("/users", userRoutes);
 app.use("/auth", authRoutes);
+app.use("/venues", venueRoutes);
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5001;
 const server = app.listen(PORT, () => {
