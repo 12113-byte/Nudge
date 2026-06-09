@@ -60,7 +60,7 @@ export default function ProfileScreen() {
 
           {/* Contact Us Card */}
           <Card style={[styles.fullWidthCard, { width: '100%', marginBottom: 120, backgroundColor: theme.colors.onPrimary }]}
-            onPress={() => handleCardPress('/contactUs')}
+            onPress={() => handleCardPress('/contact-us')}
           >
             <Card.Content style={[styles.rowContainer, { gap: 16 }]}>
               <MaterialCommunityIcons name="chat-question" size={25} color={theme.colors.primary} />
