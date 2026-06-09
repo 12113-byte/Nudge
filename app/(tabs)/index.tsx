@@ -17,6 +17,11 @@ export default function HomeScreen() {
   );
 }
 
+// for testing, to access login screen needs Redirect import
+//   export default function Page() {
+//   return <Redirect href="/login" />;
+// }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

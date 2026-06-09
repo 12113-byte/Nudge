@@ -1,8 +1,8 @@
-import { config } from "dotenv";
-config(); // load env first
+import { config } from "dotenv"; // load env first
 
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../generated/prisma/client.js";
+config();
 
 const connectionString = process.env.DATABASE_URL as string;
 const adapter = new PrismaPg({ connectionString });
@@ -28,4 +28,4 @@ const disconnectDB = async (): Promise<void> => {
     await prisma.$disconnect();
 };
 
-export { prisma, connectDB, disconnectDB };
+export { connectDB, disconnectDB, prisma };

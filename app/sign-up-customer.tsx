@@ -1,14 +1,74 @@
 import { router } from 'expo-router';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Button, TextInput, useTheme } from 'react-native-paper';
+import { useRef, useState } from 'react';
+import {
+    Image,
+    KeyboardAvoidingView, Platform,
+    TextInput as RNTextInput,
+    ScrollView, StyleSheet, Text, TouchableOpacity, View
+} from 'react-native';
+import {
+    Button, Dialog, Portal,
+    TextInput,
+    useTheme
+} from 'react-native-paper';
 
 export default function SignUpScreen() {
     const theme = useTheme();
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState ("");
+
+    const [popUpVisible, setPopUpVisible] = useState(false);
+
+    const lastNameRef = useRef<RNTextInput>(null);
+    const emailRef = useRef<RNTextInput>(null);
+    const passwordRef = useRef<RNTextInput>(null);
+    const confirmPasswordRef = useRef<RNTextInput>(null);
+
+    // TODO: clean-up, function should go into helper file
+    const handleSignUp = async () => {
+
+        if (password !== confirmPassword) {
+            alert("Password doesn't match!");
+            return;
+        }
+
+        try {
+            const response = await fetch("http://192.168.0.29:5001/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: email,
+                    password: password,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setPopUpVisible(true);
+            } else {
+                alert(data.message || "Something went wrong");
+            }
+        } catch (error) {
+            alert("Could not connect to server");
+        }
+    };
 
     return (
+        <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // makes the phone keyboard not cover fields
+        style={{ flex: 1 }}
+        >
         <ScrollView
             style={[styles.container, { backgroundColor: theme.colors.background }]}
-            contentContainerStyle={styles.scrollContent}>
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled"
+            >
             {/* Top Navigation */}
             <View style={styles.topNav}>
                 <TouchableOpacity onPress={() => {}}>
@@ -45,41 +105,66 @@ export default function SignUpScreen() {
             {/* Input Fields */}
             <View style={styles.inputContainer}>
                 <TextInput
-                label="First Name"
-                mode="outlined"
-                style={styles.input}
-                outlineColor={theme.colors.primary}
-                activeOutlineColor={theme.colors.primary}
+                    label="First Name"
+                    returnKeyType="next"
+                    onSubmitEditing={() => lastNameRef.current?.focus()}
+                    mode="outlined"
+                    style={styles.input}
+                    outlineColor={theme.colors.primary}
+                    activeOutlineColor={theme.colors.primary}
+                    value={firstName}
+                    onChangeText={setFirstName}
                 />
                 <TextInput
-                label="Last Name"
-                mode="outlined"
-                style={styles.input}
-                outlineColor={theme.colors.primary}
-                activeOutlineColor={theme.colors.primary}
+                    ref={lastNameRef as any}
+                    label="Last Name"
+                    returnKeyType="next"
+                    onSubmitEditing={() => emailRef.current?.focus()}
+                    mode="outlined"
+                    style={styles.input}
+                    outlineColor={theme.colors.primary}
+                    activeOutlineColor={theme.colors.primary}
+                    value={lastName}
+                    onChangeText={setLastName}
                 />
                 <TextInput
-                label="Email"
-                mode="outlined"
-                style={styles.input}
-                outlineColor={theme.colors.primary}
-                activeOutlineColor={theme.colors.primary}
+                    ref={emailRef as any}
+                    label="Email"
+                    keyboardType="email-address"
+                    returnKeyType="next"
+                    onSubmitEditing={() => passwordRef.current?.focus()}
+                    mode="outlined"
+                    style={styles.input}
+                    outlineColor={theme.colors.primary}
+                    activeOutlineColor={theme.colors.primary}
+                    value={email}
+                    onChangeText={setEmail}
                 />
                 <TextInput
-                label="Password"
-                mode="outlined"
-                secureTextEntry
-                style={styles.input}
-                outlineColor={theme.colors.primary}
-                activeOutlineColor={theme.colors.primary}
+                    ref={passwordRef as any}
+                    label="Password"
+                    returnKeyType="next"
+                    onSubmitEditing={() => confirmPasswordRef.current?.focus()}
+                    mode="outlined"
+                    secureTextEntry
+                    style={styles.input}
+                    outlineColor={theme.colors.primary}
+                    activeOutlineColor={theme.colors.primary}
+                    value={password}
+                    onChangeText={setPassword}
                 />
                 <TextInput
-                label="Confirm Password"
-                mode="outlined"
-                secureTextEntry
-                style={styles.input}
-                outlineColor={theme.colors.primary}
-                activeOutlineColor={theme.colors.primary}
+                    ref={confirmPasswordRef as any}
+                    label="Confirm Password"
+                    returnKeyType="done"
+                    onSubmitEditing={handleSignUp}
+                    mode="outlined"
+                    secureTextEntry
+                    style={styles.input}
+                    outlineColor={theme.colors.primary}
+                    activeOutlineColor={theme.colors.primary}
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
                 />
             </View>
 
@@ -89,7 +174,7 @@ export default function SignUpScreen() {
                     mode="contained"
                     buttonColor={theme.colors.primary}
                     labelStyle={styles.signUpButtonText}
-                    onPress={() => {}} // TODO: add login logic
+                    onPress={handleSignUp}
                     >
                         Create Account
                 </Button>
@@ -102,6 +187,35 @@ export default function SignUpScreen() {
 
 
         </ScrollView>
+        <Portal>
+            <Dialog
+                visible={popUpVisible}
+                style={{ backgroundColor: theme.colors.onPrimary, borderRadius: 16 }}
+                onDismiss={() => {
+                    setPopUpVisible(false);
+                    router.push("/login")
+            }}>
+                <Dialog.Title style={{ color: theme.colors.primary, textAlign: "center" }}>
+                    Welcome to Nudge! 🎉
+                </Dialog.Title>
+                <Dialog.Content>
+                    <Text style={{ color: "#ffffff", textAlign: "center" }}>
+                        Please log in. Your account is ready!
+                        </Text>
+                </Dialog.Content>
+                <Dialog.Actions style={{ justifyContent: "center"}}>
+                    <Button
+                        textColor={theme.colors.primary}
+                        onPress={() => {
+                            setPopUpVisible(false);
+                            router.push("/login");
+                        }}>
+                        Let's go!
+                    </Button>
+                </Dialog.Actions>
+            </Dialog>
+        </Portal>
+        </KeyboardAvoidingView>
     );
 }
 
