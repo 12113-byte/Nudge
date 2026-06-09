@@ -20,11 +20,11 @@ const authenticate = async (req: Request, res: Response, next: NextFunction): Pr
         }
     
         // Verify token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
+        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: number };
 
         // Fetch user and attach to request
         const user = await prisma.user.findUnique({
-            where: { id: decoded.userId },
+            where: { id: decoded.id },
         });
 
         if (!user) {
