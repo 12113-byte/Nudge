@@ -34,6 +34,10 @@ export default function RootLayout() {
         <Stack.Screen name="sign-up" options={{ headerShown: false, animation: 'none' }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
         <Stack.Screen name="profile" options={{ headerShown: true}} />
+        <Stack.Screen name="contact-us" options={{ headerShown: true }} />
+        <Stack.Screen name="bookings" options={{ headerShown: true }} />
+        <Stack.Screen name="reviews" options={{ headerShown: true }} />
+        <Stack.Screen name="settings" options={{ headerShown: true }} />
       </Stack>
       <StatusBar style="light" />
     </PaperProvider>

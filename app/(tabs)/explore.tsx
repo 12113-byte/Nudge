@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 
-export default function HomeScreen() {
+export default function ExploreScreen() {
   const theme = useTheme();
 
   return (

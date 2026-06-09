@@ -10,7 +10,7 @@ export default function TopNavBar() {
     const insets = useSafeAreaInsets();
     const pathname = usePathname();
 
-    const subPage = ['/profile', '/bookings', '/reviews', '/contactUs', '/settings', '/favourites']
+    const subPage = ['/profile', '/bookings', '/contact-us', '/reviews', '/settings', '/favourites']
 
     const isSubPage = subPage.includes(pathname);
 

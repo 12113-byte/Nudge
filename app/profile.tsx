@@ -6,9 +6,9 @@ import { Button, Card, Text, useTheme } from 'react-native-paper';
 const ROUTES = {
   BOOKINGS: '/bookings',
   FAVOURITES: '/favourites',
-  REVIEWS: 'reviews',
-  CONTACT: 'contactUs',
-  SETTINGS: 'settings'
+  REVIEWS: '/reviews',
+  CONTACT: '/contact-us',
+  SETTINGS: '/settings'
 };
 
 export default function ProfileScreen() {
@@ -28,7 +28,7 @@ export default function ProfileScreen() {
               <MaterialCommunityIcons name="account-outline" size={50} color={theme.colors.background} />
             </View>
 
-            <View style={styles.settingsIcon}>
+            <View style={[styles.settingsIcon, { backgroundColor: theme.colors.onPrimary, borderColor: theme.colors.primary }]}>
               <MaterialCommunityIcons
                 name="cog"
                 size={20}
@@ -46,7 +46,7 @@ export default function ProfileScreen() {
               { icon: 'heart', val: '12', label: 'Favourites', route: ROUTES.FAVOURITES },
               { icon: 'chat', val: '8', label: 'Reviews', route: ROUTES.REVIEWS }
             ].map((item, index) => (
-              <Card key={index} style={styles.profileCard} onPress={() => handleCardPress(item.route)}>
+              <Card key={index} style={[styles.profileCard, { backgroundColor: theme.colors.onPrimary}]} onPress={() => handleCardPress(item.route)}>
                 <Card.Content style={styles.cardInner}>
                   <View style={styles.rowContainer}>
                     <MaterialCommunityIcons name={item.icon as any} size={20} color={theme.colors.primary} />
@@ -59,7 +59,7 @@ export default function ProfileScreen() {
           </View>
 
           {/* Contact Us Card */}
-          <Card style={[styles.fullWidthCard, { width: '100%', marginBottom: 120 }]}
+          <Card style={[styles.fullWidthCard, { width: '100%', marginBottom: 120, backgroundColor: theme.colors.onPrimary }]}
             onPress={() => handleCardPress('/contactUs')}
           >
             <Card.Content style={[styles.rowContainer, { gap: 16 }]}>
@@ -71,7 +71,7 @@ export default function ProfileScreen() {
           {/* Log Out Button */}
           <Button mode="contained" buttonColor={theme.colors.primary} 
           onPress={() => console.log("Logged Out")}
-          style={{ width: '100%', borderRadius: 12 }} contentStyle={{ height: 60 }} labelStyle={styles.logoutText}>
+          style={{ width: '100%', borderRadius: 12 }} contentStyle={{ height: 60 }} labelStyle={[styles.logoutText, { color: theme.colors.background }]}>
             <MaterialCommunityIcons name="logout" size={20} color={theme.colors.background} /> Log Out
           </Button>
         </View>
@@ -105,7 +105,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     margin: 0,
-    backgroundColor: '#333333',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
@@ -114,7 +113,6 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   profileCard: {
-    backgroundColor: '#2a3652',
     borderRadius: 12,
     flex: 1,
     justifyContent: 'center'
@@ -129,29 +127,25 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   logoutText: {
-    color: "#142140",
     fontWeight: "bold",
     fontSize: 16,
   },
   fullWidthCard: {
-    backgroundColor: '#2a3652',
     borderRadius: 12,
     width: '100%',
     marginBottom: 120,
     padding: 8,
   },
   settingsIcon: {
-    position: 'absolute', // The icon
+    position: 'absolute',
     bottom: 0,
     right: 0,
-    backgroundColor: '#2a3652', // Match your card color
-    borderRadius: 15,           // Makes it a circle
+    borderRadius: 15,
     padding: 4,
     borderWidth: 2,
-    borderColor: '#FF6B6B',
   },
   profileContainer: {
-    position: 'relative', // The parent
+    position: 'relative',
     marginBottom: 16,
     width: 100,
     height: 100
