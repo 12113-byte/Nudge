@@ -22,6 +22,8 @@ app.use("/users", userRoutes);
 app.use("/auth", authRoutes);
 app.use("/venues", venueRoutes);
 
+app.use(errorHandler);
+
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5001;
 const server = app.listen(PORT, () => {
   console.log(`Server running on PORT ${PORT}`);
@@ -53,5 +55,3 @@ process.on("SIGTERM", () => {
     process.exit(0);
   });
 });
-
-app.use(errorHandler);
