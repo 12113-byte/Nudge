@@ -51,7 +51,7 @@ export default function SignUpScreen() {
 
             if (response.ok) {
                 setPopUpVisible(true);
-            } else {
+            } else { // TODO: stuling of error pop up
                 alert(data.message || "Something went wrong");
             }
         } catch (error) {
