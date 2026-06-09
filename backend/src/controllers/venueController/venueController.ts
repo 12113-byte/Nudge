@@ -1,40 +1,28 @@
-import { Request, Response } from "express";
-import { prisma } from "../config/db.js";
+import { NextFunction, Request, Response } from "express";
+import { prisma } from "../../config/db";
 
-const createVenue = async (req: Request, res: Response): Promise<void> => {
+const createVenue = async (req: Request, res: Response, next: NextFunction) => {
+  const {
+    owner_id,
+    name,
+    email,
+    address,
+    phone_number,
+    website,
+    about,
+    image_urls,
+    latitude,
+    longitude,
+  } = req.body;
+
   try {
-    const {
-      owner_id,
-      name,
-      email,
-      address,
-      phone_number,
-      website,
-      about,
-      image_urls,
-      latitude,
-      longitude,
-    } = req.body as {
-      owner_id: number;
-      name: string;
-      email: string;
-      address: string;
-      phone_number: string;
-      website: string;
-      about: string;
-      image_urls: string[];
-      latitude: number;
-      longitude: number;
-    };
-
     //Check if venue already exists
     const venueExists = await prisma.venue.findUnique({
       where: { email },
     });
 
     if (venueExists) {
-      res.status(400).json({ error: "Venue already exists with this email" });
-      return;
+      throw new Error("Venue already exists with this email");
     }
 
     //Create Venue
@@ -54,7 +42,6 @@ const createVenue = async (req: Request, res: Response): Promise<void> => {
         longitude,
       },
     });
-
     res.status(201).json({
       status: "success",
       data: {
@@ -67,12 +54,15 @@ const createVenue = async (req: Request, res: Response): Promise<void> => {
       },
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: (err as Error).message });
+    next(err);
   }
 };
 
-const getVenues = async (req: Request, res: Response): Promise<void> => {
+const getVenues = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const allVenues = await prisma.venue.findMany();
 
@@ -83,12 +73,15 @@ const getVenues = async (req: Request, res: Response): Promise<void> => {
       },
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: (err as Error).message });
+    next(err);
   }
 };
 
-const getVenueById = async (req: Request, res: Response): Promise<void> => {
+const getVenueById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     //convert string to number
     const venue_id = Number(req.params.venueId);
@@ -114,12 +107,15 @@ const getVenueById = async (req: Request, res: Response): Promise<void> => {
       });
     }
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: (err as Error).message });
+    next(err);
   }
 };
 
-const getVenueByName = async (req: Request, res: Response): Promise<void> => {
+const getVenueByName = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const { venue_name } = req.body;
 
@@ -148,20 +144,17 @@ const getVenueByName = async (req: Request, res: Response): Promise<void> => {
       });
     }
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: (err as Error).message });
+    next(err);
   }
 };
 
-const updateVenue = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const venue =
-  }
-}
+// const updateVenue = async (req: Request, res: Response): Promise<void> => {
+//   try {
+//     const venue =
+//   }
+// }
 
 //getVenueByOwnerId
-
-
 
 //deleteVenue
 

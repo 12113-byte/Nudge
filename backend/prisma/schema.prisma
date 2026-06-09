@@ -43,3 +43,16 @@ model Venue {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
+
+
+/**
+TODO:
+
+Tables:
+OpeningHours
+BusinessUser
+
+
+
+Validations:
+*/

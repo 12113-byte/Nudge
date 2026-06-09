@@ -4,7 +4,7 @@ import {
   getVenueById,
   getVenueByName,
   getVenues,
-} from "../controllers/venueController";
+} from "../controllers/venueController.js";
 
 const router = Router();
 

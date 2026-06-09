@@ -6,6 +6,7 @@ import errorHandler from "./middleware/errorHandler.js";
 // Import Routes
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import venueRoutes from "./routes/venueRoutes.js";
 
 config();
 connectDB();
