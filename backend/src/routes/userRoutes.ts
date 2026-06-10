@@ -1,14 +1,9 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
+import { authenticate } from "../middleware/authenticate.js";
+import { getProfile } from "../controllers/userController.js";
 
 const router = Router();
 
-router.get("/", (req: Request, res: Response) => {
-    res.json({ httpMethod: "get" });
-});
-
-router.get("/:id", (req: Request, res: Response) => {
-    res.json({ message: "Hello" });
-});
-
+router.get("/profile", authenticate, getProfile);
 
 export default router;
