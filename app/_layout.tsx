@@ -14,7 +14,7 @@ const theme = {
     background: '#142140',
     primary: '#FF6B6B',
     tertiary: '#8E8E93',
-    onPrimary: '#2a3652'
+    onPrimary: '#2a3652',
   }
 }
 

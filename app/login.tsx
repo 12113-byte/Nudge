@@ -1,6 +1,10 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+    Image,
+    Keyboard, StyleSheet, Text,
+    TouchableOpacity, TouchableWithoutFeedback, View
+} from 'react-native';
 import { Button, TextInput, useTheme } from 'react-native-paper';
 
 export default function LoginScreen() {
@@ -9,94 +13,104 @@ export default function LoginScreen() {
     const theme = useTheme();
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-            {/* Top Navigation */}
-            <View style={styles.topNav}>
-                <TouchableOpacity onPress={() => setUserType("customer")}>
-                    <Text style={[styles.topNavText, userType === "customer" && styles.topNavActive]}>Customer</Text>
-                </TouchableOpacity>
-                <Text style={styles.topNavSeparator}> | </Text>
-                <TouchableOpacity onPress={() => setUserType("business")}>
-                    <Text style={[styles.topNavText, userType === "business" && styles.topNavActive]}>Business</Text>
-                </TouchableOpacity>
-            </View>
-
-            {/* Logo */}
-            <View style={styles.logoContainer}>
-                <Image
-                source={require("@/assets/images/logo_nudge.png")}
-                style={styles.logo}
-                />
-                <Text style={styles.logoText}>Nudge</Text>
-            </View>
-
-            {/* Sign Up Link */}
-            <View style={[styles.toggleContainer, { borderColor: theme.colors.primary, backgroundColor: theme.colors.onPrimary }]}>
-                <View style={[styles.toggleButton, styles.toggleActive, { backgroundColor: theme.colors.primary }]}>
-                    <Text style={styles.toggleText}>Log In</Text>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+                {/* Top Navigation */}
+                <View style={styles.topNav}>
+                    <TouchableOpacity onPress={() => setUserType("customer")}>
+                        <Text style={[
+                            styles.topNavText,
+                            { color: theme.colors.tertiary },
+                            userType === "customer" && styles.topNavActive
+                            ]}>Customer</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.topNavSeparator}> | </Text>
+                    <TouchableOpacity onPress={() => setUserType("business")}>
+                        <Text style={[
+                            styles.topNavText,
+                            { color: theme.colors.tertiary },
+                            userType === "business" && styles.topNavActive
+                            ]}>Business</Text>
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                style={styles.toggleButton}
-                onPress={() => userType === "business"
-                    ? router.push("/sign-up-business")
-                    : router.push("/sign-up-customer")
-                }
-                >
-                    <Text style={styles.toggleText}>Sign Up</Text>
-                </TouchableOpacity>
-            </View>
 
-            {/* Input Fields */}
-            <View style={styles.inputContainer}>
-                <TextInput
-                label="Email"
-                mode="outlined"
-                style={styles.input}
-                outlineColor={theme.colors.primary}
-                activeOutlineColor={theme.colors.primary}
-                />
-                <TextInput
-                label="Password"
-                mode="outlined"
-                secureTextEntry
-                style={styles.input}
-                outlineColor={theme.colors.primary}
-                activeOutlineColor={theme.colors.primary}
-                />
-            </View>
+                {/* Logo */}
+                <View style={styles.logoContainer}>
+                    <Image
+                    source={require("@/assets/images/logo_nudge.png")}
+                    style={styles.logo}
+                    />
+                    <Text style={styles.logoText}>Nudge</Text>
+                </View>
 
-            {/* Forgot Password link */}
-            <TouchableOpacity style={styles.forgotPasswordLink}>
-                {/* onPress={() => router.push("/forgot-password")} TODO; add when link to it exists*/}
-                <Text style={[styles.forgotPasswordLinkText, { color: theme.colors.primary }]}>Forgot Password?</Text>
-            </TouchableOpacity>
-
-            {/* Log In Button */}
-            <View style={styles.loginButtonContainer}>
-                <Button
-                    mode="contained"
-                    buttonColor={theme.colors.primary}
-                    labelStyle={styles.loginButtonText}
-                    onPress={() => {}} // TODO: add login logic
+                {/* Sign Up Link */}
+                <View style={[styles.toggleContainer, { borderColor: theme.colors.primary, backgroundColor: theme.colors.onPrimary }]}>
+                    <View style={[styles.toggleButton, { backgroundColor: theme.colors.primary }]}>
+                        <Text style={styles.toggleText}>Log In</Text>
+                    </View>
+                    <TouchableOpacity
+                    style={styles.toggleButton}
+                    onPress={() => userType === "business"
+                        ? router.push("/sign-up-business")
+                        : router.push("/sign-up-customer")
+                    }
                     >
-                        Log In
-                </Button>
+                        <Text style={styles.toggleText}>Sign Up</Text>
+                    </TouchableOpacity>
+                </View>
+
+                {/* Input Fields */}
+                <View style={styles.inputContainer}>
+                    <TextInput
+                    label="Email"
+                    mode="outlined"
+                    style={styles.input}
+                    outlineColor={theme.colors.primary}
+                    activeOutlineColor={theme.colors.primary}
+                    />
+                    <TextInput
+                    label="Password"
+                    mode="outlined"
+                    secureTextEntry
+                    style={styles.input}
+                    outlineColor={theme.colors.primary}
+                    activeOutlineColor={theme.colors.primary}
+                    />
+                </View>
+
+                {/* Forgot Password link */}
+                <TouchableOpacity style={styles.forgotPasswordLink}>
+                    {/* onPress={() => router.push("/forgot-password")} TODO; add when link to it exists*/}
+                    <Text style={[styles.forgotPasswordLinkText, { color: theme.colors.primary }]}>Forgot Password?</Text>
+                </TouchableOpacity>
+
+                {/* Log In Button */}
+                <View style={styles.loginButtonContainer}>
+                    <Button
+                        mode="contained"
+                        buttonColor={theme.colors.primary}
+                        labelStyle={styles.loginButtonText}
+                        style={styles.loginButton}
+                        contentStyle={{ height: 56 }}
+                        onPress={() => {}} // TODO: add login logic
+                        >
+                            Log In
+                    </Button>
+                </View>
+
+                {/* Bottom Navigation */}
+                <View style={styles.bottomNav}>
+                    <Text style={styles.bottomNavText}>Privacy Policy | Terms of Service</Text>
+                </View>
+
             </View>
-
-            {/* Bottom Navigation */}
-            <View style={styles.bottomNav}>
-                <Text style={styles.bottomNavText}>Privacy Policy | Terms of Service</Text>
-            </View>
-
-
-        </View>
+        </TouchableWithoutFeedback>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#142140",
     },
     topNav: {
         flexDirection: "row",
@@ -105,8 +119,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 24,
     },
     topNavText: {
-        color: "#8E8E93",
-        fontSize: 14,
+        fontSize: 20,
     },
     topNavActive: {
         color: "#ffffff",
@@ -114,11 +127,11 @@ const styles = StyleSheet.create({
     },
     topNavSeparator: {
         color: "#ffffff",
-        fontSize: 14,
+        fontSize: 20,
     },
     logoContainer: {
         alignItems: "center",
-        marginTop: 60,
+        marginTop: 50,
     },
     logo: {
         width: 100,
@@ -133,8 +146,6 @@ const styles = StyleSheet.create({
     },
     toggleContainer: {
         flexDirection: "row",
-        backgroundColor: "#2a3652",
-        borderColor: "#FF6B6B",
         borderWidth: 1,
         borderRadius: 50,
         marginHorizontal: 24,
@@ -142,16 +153,13 @@ const styles = StyleSheet.create({
     },
     toggleButton: {
         flex: 1,
-        paddingVertical: 12,
+        paddingVertical: 16,
         alignItems: "center",
         borderRadius: 50,
     },
-    toggleActive: {
-        backgroundColor: "#FF6B6B",
-    },
     toggleText: {
-        color: "#ffffff",
         fontWeight: "bold",
+        color: "#ffffff",
     },
     inputContainer: {
         marginHorizontal: 24,
@@ -159,7 +167,7 @@ const styles = StyleSheet.create({
         gap: 12,
     },
     input: {
-        backgroundColor: "#142140",
+        height: 56,
     },
     forgotPasswordLink: {
         alignItems: "flex-end",
@@ -167,12 +175,14 @@ const styles = StyleSheet.create({
         marginHorizontal: 24,
     },
     forgotPasswordLinkText: {
-        color: "#FF6B6B",
-        fontSize: 14,
+        fontSize: 16,
     },
     loginButtonContainer: {
         marginHorizontal: 24,
         marginTop: 24,
+    },
+    loginButton: {
+        borderRadius: 12
     },
     loginButtonText: {
         color: "#ffffff",

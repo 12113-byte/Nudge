@@ -1,128 +1,205 @@
 import { router } from 'expo-router';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Button, TextInput, useTheme } from 'react-native-paper';
+import { useRef, useState } from 'react';
+import {
+    Image,
+    Keyboard,
+    KeyboardAvoidingView, Platform,
+    TextInput as RNTextInput,
+    ScrollView, StyleSheet, Text, TouchableOpacity,
+    TouchableWithoutFeedback,
+    View
+} from 'react-native';
+import {
+    Button, TextInput, useTheme
+} from 'react-native-paper';
 
-export default function SignUpScreen() {
+export default function SignUpBusinessScreen() {
     const theme = useTheme();
+    // cross check with backend value names
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [companyName, setCompanyName] = useState("");
+    const [businessEmail, setBusinessEmail] = useState("");
+    const [businessPhone, setBusinessPhone] = useState("");
+    const [abn, setAbn] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setconfirmPassword] = useState("");
 
+    const lastNameRef = useRef<RNTextInput>(null);
+    const companyNameRef = useRef<RNTextInput>(null);
+    const businessEmailRef = useRef<RNTextInput>(null);
+    const businessPhoneRef = useRef<RNTextInput>(null);
+    const abnRef = useRef<RNTextInput>(null);
+    const passswordRef = useRef<RNTextInput>(null);
+    const confirmPasswordRef = useRef<RNTextInput>(null);
+    
     return (
-        <ScrollView
-            style={[styles.container, { backgroundColor: theme.colors.background }]}
-            contentContainerStyle={styles.scrollContent}>
-            {/* Top Navigation */}
-            <View style={styles.topNav}>
-                <TouchableOpacity onPress={() => router.push("/sign-up-customer")} >
-                    <Text style={styles.topNavText}>Customer</Text>
-                </TouchableOpacity>
-                <Text style={styles.topNavSeparator}> | </Text>
-                <TouchableOpacity onPress={() => {}}>
-                    <Text style={[styles.topNavText, styles.topNavActive]}>Business</Text>
-                </TouchableOpacity>
-            </View>
-
-            {/* Logo */}
-            <View style={styles.logoContainer}>
-                <Image
-                source={require("@/assets/images/logo_nudge.png")}
-                style={styles.logo}
-                />
-                <Text style={styles.logoText}>Nudge</Text>
-            </View>
-
-            {/* Log In Link */}
-            <View style={[styles.toggleContainer, { borderColor: theme.colors.primary, backgroundColor: theme.colors.onPrimary }]}>
-                <TouchableOpacity
-                    style={styles.toggleButton}
-                    onPress={() => router.push({ pathname: "/login", params: { userType: "business" } })} // detects login for business
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'} //makes the phone keyboard not cover fields
+            style={{ flex: 1}}
+            >
+            <ScrollView
+                style={[styles.container, { backgroundColor: theme.colors.background }]}
+                contentContainerStyle={styles.scrollContent}
+                keyboardShouldPersistTaps="handled"
                 >
-                    <Text style={styles.toggleText}>Log In</Text>
-            </TouchableOpacity>
-            <View style={[styles.toggleButton, styles.toggleActive, { backgroundColor: theme.colors.primary }]}>
-                    <Text style={styles.toggleText}>Sign Up</Text>
+                {/* Top Navigation */}
+                <View style={styles.topNav}>
+                    <TouchableOpacity onPress={() => router.push("/sign-up-customer")} >
+                        <Text style={[styles.topNavText, { color: theme.colors.tertiary}]}>Customer</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.topNavSeparator}> | </Text>
+                    <TouchableOpacity onPress={() => {}}>
+                        <Text style={[styles.topNavText, styles.topNavActive]}>Business</Text>
+                    </TouchableOpacity>
                 </View>
-            </View>
 
-            {/* Input Fields */}
-            <View style={styles.inputContainer}>
-                <TextInput
-                label="First Name"
-                mode="outlined"
-                style={styles.input}
-                outlineColor={theme.colors.primary}
-                activeOutlineColor={theme.colors.primary}
-                />
-                <TextInput
-                label="Last Name"
-                mode="outlined"
-                style={styles.input}
-                outlineColor={theme.colors.primary}
-                activeOutlineColor={theme.colors.primary}
-                />
-                <TextInput
-                label="Company Name"
-                mode="outlined"
-                style={styles.input}
-                outlineColor={theme.colors.primary}
-                activeOutlineColor={theme.colors.primary}
-                />
-                <TextInput
-                label="Business Email"
-                mode="outlined"
-                style={styles.input}
-                outlineColor={theme.colors.primary}
-                activeOutlineColor={theme.colors.primary}
-                />
-                <TextInput
-                label="Business Phone"
-                mode="outlined"
-                style={styles.input}
-                outlineColor={theme.colors.primary}
-                activeOutlineColor={theme.colors.primary}
-                />
-                <TextInput
-                label="ABN"
-                mode="outlined"
-                style={styles.input}
-                outlineColor={theme.colors.primary}
-                activeOutlineColor={theme.colors.primary}
-                />
-                <TextInput
-                label="Password"
-                mode="outlined"
-                secureTextEntry
-                style={styles.input}
-                outlineColor={theme.colors.primary}
-                activeOutlineColor={theme.colors.primary}
-                />
-                <TextInput
-                label="Confirm Password"
-                mode="outlined"
-                secureTextEntry
-                style={styles.input}
-                outlineColor={theme.colors.primary}
-                activeOutlineColor={theme.colors.primary}
-                />
-            </View>
+                {/* Logo */}
+                <View style={styles.logoContainer}>
+                    <Image
+                    source={require("@/assets/images/logo_nudge.png")}
+                    style={styles.logo}
+                    />
+                    <Text style={styles.logoText}>Nudge</Text>
+                </View>
 
-            {/* Sign Up Button */}
-            <View style={styles.signUpButtonContainer}>
-                <Button
-                    mode="contained"
-                    buttonColor={theme.colors.primary}
-                    labelStyle={styles.signUpButtonText}
-                    onPress={() => {}} // TODO: add login logic
+                {/* Log In Link */}
+                <View style={[styles.toggleContainer, { borderColor: theme.colors.primary, backgroundColor: theme.colors.onPrimary }]}>
+                    <TouchableOpacity
+                        style={styles.toggleButton}
+                        onPress={() => router.push({ pathname: "/login", params: { userType: "business" } })} // detects login for business
                     >
-                        Create Account
-                </Button>
-            </View>
+                        <Text style={styles.toggleText}>Log In</Text>
+                </TouchableOpacity>
+                <View style={[styles.toggleButton, { backgroundColor: theme.colors.primary }]}>
+                        <Text style={styles.toggleText}>Sign Up</Text>
+                    </View>
+                </View>
 
-            {/* Bottom Navigation */}
-            <View style={styles.bottomNav}>
-                <Text style={styles.bottomNavText}>Privacy Policy | Terms of Service</Text>
-            </View>
+                {/* Input Fields */}
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        label="First Name"
+                        returnKeyType="next"
+                        onSubmitEditing={() => lastNameRef.current?.focus()}
+                        mode="outlined"
+                        style={styles.input}
+                        outlineColor={theme.colors.primary}
+                        activeOutlineColor={theme.colors.primary}
+                        value={firstName}
+                        onChangeText={setFirstName}
+                    />
+                    <TextInput
+                        ref={lastNameRef as any}
+                        label="Last Name"
+                        returnKeyType="next"
+                        onSubmitEditing={() => companyNameRef.current?.focus()}
+                        mode="outlined"
+                        style={styles.input}
+                        outlineColor={theme.colors.primary}
+                        activeOutlineColor={theme.colors.primary}
+                        value={lastName}
+                        onChangeText={setLastName}
+                    />
+                    <TextInput
+                        ref={companyNameRef as any}
+                        label="Company Name"
+                        returnKeyType="next"
+                        onSubmitEditing={() => businessEmailRef.current?.focus()}
+                        mode="outlined"
+                        style={styles.input}
+                        outlineColor={theme.colors.primary}
+                        activeOutlineColor={theme.colors.primary}
+                        value={companyName}
+                        onChangeText={setCompanyName}
+                    />
+                    <TextInput
+                        ref={businessEmailRef as any}
+                        label="Business Email"
+                        returnKeyType="next"
+                        onSubmitEditing={() => businessPhoneRef.current?.focus()}
+                        mode="outlined"
+                        style={styles.input}
+                        outlineColor={theme.colors.primary}
+                        activeOutlineColor={theme.colors.primary}
+                        value={businessEmail}
+                        onChangeText={setBusinessEmail}
+                    />
+                    <TextInput
+                        ref={businessPhoneRef as any}
+                        label="Business Phone"
+                        returnKeyType="next"
+                        onSubmitEditing={() => abnRef.current?.focus()}
+                        mode="outlined"
+                        style={styles.input}
+                        outlineColor={theme.colors.primary}
+                        activeOutlineColor={theme.colors.primary}
+                        value={businessPhone}
+                        onChangeText={setBusinessPhone}
+                    />
+                    <TextInput
+                        ref={abnRef as any}
+                        label="ABN"
+                        returnKeyType="next"
+                        onSubmitEditing={() => passswordRef.current?.focus()}
+                        mode="outlined"
+                        style={styles.input}
+                        outlineColor={theme.colors.primary}
+                        activeOutlineColor={theme.colors.primary}
+                        value={abn}
+                        onChangeText={setAbn}
+                    />
+                    <TextInput
+                        ref={passswordRef as any}
+                        label="Password"
+                        returnKeyType="next"
+                        onSubmitEditing={() => confirmPasswordRef.current?.focus()}
+                        mode="outlined"
+                        secureTextEntry
+                        style={styles.input}
+                        outlineColor={theme.colors.primary}
+                        activeOutlineColor={theme.colors.primary}
+                        value={password}
+                        onChangeText={setPassword}
+                    />
+                    <TextInput
+                        ref={confirmPasswordRef as any}
+                        label="Confirm Password"
+                        returnKeyType="done"
+                        // onSubmitEditing={handleSignUp}
+                        mode="outlined"
+                        secureTextEntry
+                        style={styles.input}
+                        outlineColor={theme.colors.primary}
+                        activeOutlineColor={theme.colors.primary}
+                        value={confirmPassword}
+                        onChangeText={setconfirmPassword}
+                    />
+                </View>
 
+                {/* Sign Up Button */}
+                <View style={styles.signUpButtonContainer}>
+                    <Button
+                        mode="contained"
+                        buttonColor={theme.colors.primary}
+                        labelStyle={styles.signUpButtonText}
+                        style={styles.signUpButton}
+                        contentStyle={{ height: 56 }}
+                        onPress={() => {}} // TODO: add handleSignUp function, when connected to backend
+                        >
+                            Create Account
+                    </Button>
+                </View>
 
-        </ScrollView>
+                {/* Bottom Navigation */}
+                <View style={styles.bottomNav}>
+                    <Text style={styles.bottomNavText}>Privacy Policy | Terms of Service</Text>
+                </View>
+
+            </ScrollView>
+            </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     );
 }
 
@@ -132,7 +209,6 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: "#142140",
     },
     topNav: {
         flexDirection: "row",
@@ -141,8 +217,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 24,
     },
     topNavText: {
-        color: "#8E8E93",
-        fontSize: 14,
+        fontSize: 20,
     },
     topNavActive: {
         color: "#ffffff",
@@ -150,7 +225,7 @@ const styles = StyleSheet.create({
     },
     topNavSeparator: {
         color: "#ffffff",
-        fontSize: 14,
+        fontSize: 20,
     },
     logoContainer: {
         alignItems: "center",
@@ -169,8 +244,6 @@ const styles = StyleSheet.create({
     },
     toggleContainer: {
         flexDirection: "row",
-        backgroundColor: "#2a3652",
-        borderColor: "#FF6B6B",
         borderWidth: 1,
         borderRadius: 50,
         marginHorizontal: 24,
@@ -178,12 +251,9 @@ const styles = StyleSheet.create({
     },
     toggleButton: {
         flex: 1,
-        paddingVertical: 12,
+        paddingVertical: 16,
         alignItems: "center",
         borderRadius: 50,
-    },
-    toggleActive: {
-        backgroundColor: "#FF6B6B",
     },
     toggleText: {
         color: "#ffffff",
@@ -195,11 +265,14 @@ const styles = StyleSheet.create({
         gap: 12,
     },
     input: {
-        backgroundColor: "#142140",
+        height: 56,
     },
     signUpButtonContainer: {
         marginHorizontal: 24,
         marginTop: 24,
+    },
+    signUpButton: {
+        borderRadius: 12,
     },
     signUpButtonText: {
         color: "#ffffff",
