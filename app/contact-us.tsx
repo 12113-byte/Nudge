@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 
-export default function ExploreScreen() {
+export default function ContactUsScreen() {
   const theme = useTheme();
 
   return (
@@ -10,7 +10,7 @@ export default function ExploreScreen() {
       <View style={styles.content}>
         {/* Use theme.colors.primary and built-in variants */}
         <Text variant="headlineMedium" style={{ color: theme.colors.primary }}>
-          Explore
+          Contact Us
         </Text>
       </View>
     </View>
