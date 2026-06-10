@@ -40,7 +40,7 @@ export default function SignUpCustomerScreen() {
         }
 
         try {
-            const response = await fetch("http://192.168.0.29:5001/auth/register", { // TODO: replace with env varibale/config?
+            const response = await fetch("localhost:5001/auth/register", { // TODO: replace with env varibale/config?
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
