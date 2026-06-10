@@ -1,11 +1,10 @@
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { useNavigation } from 'expo-router';
+import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { Button, Text, TextInput, useTheme } from 'react-native-paper';
 
 export default function SettingsScreen() {
     const theme = useTheme();
-    const navigation = useNavigation();
 
     return (
         // Use theme.colors.background directly in the style
@@ -19,7 +18,7 @@ export default function SettingsScreen() {
                 </View>
 
                 {[
-                    { icon: 'account-outline', val: 'Alex Morgan', label: 'Name' },
+                    { icon: 'account-outline', val: 'Alex Morgan', label: 'Name' }, // To get pulled from DB Later
                     { icon: 'email', val: 'alex.morgan@email.com', label: 'Email Address' },
                 ].map((item, index) => (
                     <View key={index} style={styles.inputContainer}>
@@ -48,7 +47,7 @@ export default function SettingsScreen() {
                 </Button>
 
                 <Button mode="outlined" buttonColor={theme.colors.background}
-                    onPress={() => navigation.goBack()}
+                    onPress={() => router.back()}
                     style={{ width: '85%', borderRadius: 12, margin: 10, 
                         borderColor: theme.colors.onPrimary, borderWidth: 3 }}
                     contentStyle={{ height: 60 }}
@@ -68,10 +67,6 @@ const styles = StyleSheet.create({
     },
     content: {
         justifyContent: 'center',
-        alignItems: 'center',
-    },
-    cardContent: {
-        width: '85%',
         alignItems: 'center',
     },
     profileCircle: {

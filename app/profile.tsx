@@ -70,7 +70,7 @@ export default function ProfileScreen() {
 
           {/* Log Out Button */}
           <Button mode="contained" buttonColor={theme.colors.primary} 
-          onPress={() => console.log("Logged Out")}
+          onPress={() => router.replace("/login")}
           style={{ width: '100%', borderRadius: 12 }} contentStyle={{ height: 60 }} labelStyle={[styles.logoutText, { color: theme.colors.background }]}>
             <MaterialCommunityIcons name="logout" size={20} color={theme.colors.background} /> Log Out
           </Button>
