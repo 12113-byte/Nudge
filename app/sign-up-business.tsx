@@ -15,6 +15,15 @@ import {
 
 export default function SignUpBusinessScreen() {
     const theme = useTheme();
+
+    // shared input props across multiple fields
+    const sharedInputProps = {
+        mode: "outlined" as const,
+        style: styles.input,
+        outlineColor: theme.colors.primary,
+        activeOutlineColor: theme.colors.primary,
+    };
+
     // cross check with backend value names
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -23,21 +32,21 @@ export default function SignUpBusinessScreen() {
     const [businessPhone, setBusinessPhone] = useState("");
     const [abn, setAbn] = useState("");
     const [password, setPassword] = useState("");
-    const [confirmPassword, setconfirmPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     const lastNameRef = useRef<RNTextInput>(null);
     const companyNameRef = useRef<RNTextInput>(null);
     const businessEmailRef = useRef<RNTextInput>(null);
     const businessPhoneRef = useRef<RNTextInput>(null);
     const abnRef = useRef<RNTextInput>(null);
-    const passswordRef = useRef<RNTextInput>(null);
+    const passwordRef = useRef<RNTextInput>(null);
     const confirmPasswordRef = useRef<RNTextInput>(null);
     
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'} //makes the phone keyboard not cover fields
-            style={{ flex: 1}}
+            style={{ flex: 1 }}
             >
             <ScrollView
                 style={[styles.container, { backgroundColor: theme.colors.background }]}
@@ -80,101 +89,77 @@ export default function SignUpBusinessScreen() {
                 {/* Input Fields */}
                 <View style={styles.inputContainer}>
                     <TextInput
+                        {...sharedInputProps}
                         label="First Name"
                         returnKeyType="next"
                         onSubmitEditing={() => lastNameRef.current?.focus()}
-                        mode="outlined"
-                        style={styles.input}
-                        outlineColor={theme.colors.primary}
-                        activeOutlineColor={theme.colors.primary}
                         value={firstName}
                         onChangeText={setFirstName}
                     />
                     <TextInput
+                        {...sharedInputProps}
                         ref={lastNameRef as any}
                         label="Last Name"
                         returnKeyType="next"
                         onSubmitEditing={() => companyNameRef.current?.focus()}
-                        mode="outlined"
-                        style={styles.input}
-                        outlineColor={theme.colors.primary}
-                        activeOutlineColor={theme.colors.primary}
                         value={lastName}
                         onChangeText={setLastName}
                     />
                     <TextInput
+                        {...sharedInputProps}
                         ref={companyNameRef as any}
                         label="Company Name"
                         returnKeyType="next"
                         onSubmitEditing={() => businessEmailRef.current?.focus()}
-                        mode="outlined"
-                        style={styles.input}
-                        outlineColor={theme.colors.primary}
-                        activeOutlineColor={theme.colors.primary}
                         value={companyName}
                         onChangeText={setCompanyName}
                     />
                     <TextInput
+                        {...sharedInputProps}
                         ref={businessEmailRef as any}
                         label="Business Email"
                         returnKeyType="next"
                         onSubmitEditing={() => businessPhoneRef.current?.focus()}
-                        mode="outlined"
-                        style={styles.input}
-                        outlineColor={theme.colors.primary}
-                        activeOutlineColor={theme.colors.primary}
                         value={businessEmail}
                         onChangeText={setBusinessEmail}
                     />
                     <TextInput
+                        {...sharedInputProps}
                         ref={businessPhoneRef as any}
                         label="Business Phone"
                         returnKeyType="next"
                         onSubmitEditing={() => abnRef.current?.focus()}
-                        mode="outlined"
-                        style={styles.input}
-                        outlineColor={theme.colors.primary}
-                        activeOutlineColor={theme.colors.primary}
                         value={businessPhone}
                         onChangeText={setBusinessPhone}
                     />
                     <TextInput
+                        {...sharedInputProps}
                         ref={abnRef as any}
                         label="ABN"
                         returnKeyType="next"
-                        onSubmitEditing={() => passswordRef.current?.focus()}
-                        mode="outlined"
-                        style={styles.input}
-                        outlineColor={theme.colors.primary}
-                        activeOutlineColor={theme.colors.primary}
+                        onSubmitEditing={() => passwordRef.current?.focus()}
                         value={abn}
                         onChangeText={setAbn}
                     />
                     <TextInput
-                        ref={passswordRef as any}
+                        {...sharedInputProps}
+                        ref={passwordRef as any}
                         label="Password"
                         returnKeyType="next"
                         onSubmitEditing={() => confirmPasswordRef.current?.focus()}
-                        mode="outlined"
                         secureTextEntry
-                        style={styles.input}
-                        outlineColor={theme.colors.primary}
-                        activeOutlineColor={theme.colors.primary}
                         value={password}
                         onChangeText={setPassword}
                     />
                     <TextInput
+                        {...sharedInputProps}
                         ref={confirmPasswordRef as any}
                         label="Confirm Password"
                         returnKeyType="done"
                         // onSubmitEditing={handleSignUp}
-                        mode="outlined"
                         secureTextEntry
-                        style={styles.input}
-                        outlineColor={theme.colors.primary}
-                        activeOutlineColor={theme.colors.primary}
                         value={confirmPassword}
-                        onChangeText={setconfirmPassword}
+                        onChangeText={setConfirmPassword}
                     />
                 </View>
 

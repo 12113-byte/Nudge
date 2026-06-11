@@ -2,19 +2,42 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import {
     Image,
-    Keyboard, StyleSheet, Text,
+    Keyboard, KeyboardAvoidingView, Platform,
+    ScrollView,
+    StyleSheet, Text,
     TouchableOpacity, TouchableWithoutFeedback, View
 } from 'react-native';
 import { Button, TextInput, useTheme } from 'react-native-paper';
+import { login } from "../api/auth";
 
 export default function LoginScreen() {
     const { userType: initalUserType } = useLocalSearchParams(); // detects userType and redirects to correct screen
     const [userType, setUserType] = useState((initalUserType as string) || "customer");
     const theme = useTheme();
 
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleLogin = async () => {
+        try {
+            await login(email, password);
+            router.replace("/(tabs)/index"); // confirm route name for home/index?
+            } catch (error: any) {
+                alert(error.message || "Something went wrong");
+            }
+        }
+    };
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+            <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height' } // makes keyboard not cover fields
+            style={{ flex: 1 }}
+            >
+                <ScrollView
+                style={[styles.container, { backgroundColor: theme.colors.background }]}
+                contentContainerStyle={styles.scrollContent}
+                keyboardShouldPersistTaps="handled"
+                >
                 {/* Top Navigation */}
                 <View style={styles.topNav}>
                     <TouchableOpacity onPress={() => setUserType("customer")}>
@@ -51,8 +74,8 @@ export default function LoginScreen() {
                     <TouchableOpacity
                     style={styles.toggleButton}
                     onPress={() => userType === "business"
-                        ? router.push("/sign-up-business")
-                        : router.push("/sign-up-customer")
+                        ? router.replace("/sign-up-business")
+                        : router.replace("/sign-up-customer")
                     }
                     >
                         <Text style={styles.toggleText}>Sign Up</Text>
@@ -103,12 +126,16 @@ export default function LoginScreen() {
                     <Text style={styles.bottomNavText}>Privacy Policy | Terms of Service</Text>
                 </View>
 
-            </View>
+            </ScrollView>
+            </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
     );
 }
 
 const styles = StyleSheet.create({
+    scrollContent: {
+        paddingBottom: 100,
+    },
     container: {
         flex: 1,
     },
@@ -190,11 +217,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     bottomNav: {
-        position: "absolute",
-        bottom: 24,
-        left: 0,
-        right: 0,
         alignItems: "center",
+        marginTop: 24,
+        paddingBottom: 24,
     },
     bottomNavText: {
         color: "#ffffff",

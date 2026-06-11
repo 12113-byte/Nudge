@@ -4,7 +4,6 @@ import {
 } from 'react-native';
 
 // import { Text, useTheme } from 'react-native-paper';
-// import { View } from 'react-native';
 
 // export default function HomeScreen() {
 //   const theme = useTheme();

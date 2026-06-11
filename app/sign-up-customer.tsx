@@ -18,6 +18,14 @@ import {
 export default function SignUpCustomerScreen() {
     const theme = useTheme();
 
+        // shared input props across multiple fields
+    const sharedInputProps = {
+        mode: "outlined" as const,
+        style: styles.input,
+        outlineColor: theme.colors.primary,
+        activeOutlineColor: theme.colors.primary,
+    };
+
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -40,7 +48,7 @@ export default function SignUpCustomerScreen() {
         }
 
         try {
-            const response = await fetch("localhost:5001/auth/register", { // TODO: replace with env varibale/config?
+            const response = await fetch("http://localhost:5001/auth/register", { // TODO: replace with env varibale/config?
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -110,64 +118,49 @@ export default function SignUpCustomerScreen() {
                 {/* Input Fields */}
                 <View style={styles.inputContainer}>
                     <TextInput
+                        {...sharedInputProps}
                         label="First Name"
                         returnKeyType="next"
                         onSubmitEditing={() => lastNameRef.current?.focus()}
-                        mode="outlined"
-                        style={styles.input}
-                        outlineColor={theme.colors.primary}
-                        activeOutlineColor={theme.colors.primary}
                         value={firstName}
                         onChangeText={setFirstName}
                     />
                     <TextInput
+                        {...sharedInputProps}
                         ref={lastNameRef as any}
                         label="Last Name"
                         returnKeyType="next"
                         onSubmitEditing={() => emailRef.current?.focus()}
-                        mode="outlined"
-                        style={styles.input}
-                        outlineColor={theme.colors.primary}
-                        activeOutlineColor={theme.colors.primary}
                         value={lastName}
                         onChangeText={setLastName}
                     />
                     <TextInput
+                        {...sharedInputProps}
                         ref={emailRef as any}
                         label="Email"
                         keyboardType="email-address"
                         returnKeyType="next"
                         onSubmitEditing={() => passwordRef.current?.focus()}
-                        mode="outlined"
-                        style={styles.input}
-                        outlineColor={theme.colors.primary}
-                        activeOutlineColor={theme.colors.primary}
                         value={email}
                         onChangeText={setEmail}
                     />
                     <TextInput
+                        {...sharedInputProps}
                         ref={passwordRef as any}
                         label="Password"
                         returnKeyType="next"
                         onSubmitEditing={() => confirmPasswordRef.current?.focus()}
-                        mode="outlined"
                         secureTextEntry
-                        style={styles.input}
-                        outlineColor={theme.colors.primary}
-                        activeOutlineColor={theme.colors.primary}
                         value={password}
                         onChangeText={setPassword}
                     />
                     <TextInput
+                        {...sharedInputProps}
                         ref={confirmPasswordRef as any}
                         label="Confirm Password"
                         returnKeyType="done"
                         onSubmitEditing={handleSignUp}
-                        mode="outlined"
                         secureTextEntry
-                        style={styles.input}
-                        outlineColor={theme.colors.primary}
-                        activeOutlineColor={theme.colors.primary}
                         value={confirmPassword}
                         onChangeText={setConfirmPassword}
                     />
@@ -200,7 +193,7 @@ export default function SignUpCustomerScreen() {
                         style={{ backgroundColor: theme.colors.onPrimary, borderRadius: 16 }}
                         onDismiss={() => {
                             setPopUpVisible(false);
-                            router.push("/login")
+                            router.replace("/login")
                     }}>
                         <Dialog.Title style={{ color: theme.colors.primary, textAlign: "center" }}>
                             Welcome to Nudge! 🎉
@@ -215,7 +208,7 @@ export default function SignUpCustomerScreen() {
                                 textColor={theme.colors.primary}
                                 onPress={() => {
                                     setPopUpVisible(false);
-                                    router.push("/login");
+                                    router.replace("/login");
                                 }}>
                                 Let's go!
                             </Button>
