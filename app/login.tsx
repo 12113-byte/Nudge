@@ -1,98 +1,143 @@
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+    Image,
+    Keyboard, KeyboardAvoidingView, Platform,
+    ScrollView,
+    StyleSheet, Text,
+    TouchableOpacity, TouchableWithoutFeedback, View
+} from 'react-native';
 import { Button, TextInput, useTheme } from 'react-native-paper';
+import { login } from "../api/auth";
 
 export default function LoginScreen() {
-    const [userType, setUserType] = useState("customer");
+    const { userType: initalUserType } = useLocalSearchParams(); // detects userType and redirects to correct screen
+    const [userType, setUserType] = useState((initalUserType as string) || "customer");
     const theme = useTheme();
 
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleLogin = async () => {
+        try {
+            await login(email, password);
+            router.replace("/(tabs)/index"); // confirm route name for home/index?
+            } catch (error: any) {
+                alert(error.message || "Something went wrong");
+            }
+        }
+    };
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-            {/* Top Navigation */}
-            <View style={styles.topNav}>
-                <TouchableOpacity onPress={() => setUserType("customer")}>
-                    <Text style={[styles.topNavText, userType === "customer" && styles.topNavActive]}>Customer</Text>
-                </TouchableOpacity>
-                <Text style={styles.topNavSeparator}> | </Text>
-                <TouchableOpacity onPress={() => setUserType("business")}>
-                    <Text style={[styles.topNavText, userType === "business" && styles.topNavActive]}>Business</Text>
-                </TouchableOpacity>
-            </View>
-
-            {/* Logo */}
-            <View style={styles.logoContainer}>
-                <Image
-                source={require("@/assets/images/logo_nudge.png")}
-                style={styles.logo}
-                />
-                <Text style={styles.logoText}>Nudge</Text>
-            </View>
-
-            {/* Log In "Toggler" */}
-            <View style={[styles.toggleContainer, { borderColor: theme.colors.primary, backgroundColor: theme.colors.onPrimary }]}>
-                <View style={[styles.toggleButton, styles.toggleActive, { backgroundColor: theme.colors.primary }]}>
-                    <Text style={styles.toggleText}>Log In</Text>
-                </View>
-                <TouchableOpacity
-                style={styles.toggleButton}
-                onPress={() => router.push("/sign-up")}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height' } // makes keyboard not cover fields
+            style={{ flex: 1 }}
+            >
+                <ScrollView
+                style={[styles.container, { backgroundColor: theme.colors.background }]}
+                contentContainerStyle={styles.scrollContent}
+                keyboardShouldPersistTaps="handled"
                 >
-                    <Text style={styles.toggleText}>Sign Up</Text>
-                </TouchableOpacity>
-            </View>
+                {/* Top Navigation */}
+                <View style={styles.topNav}>
+                    <TouchableOpacity onPress={() => setUserType("customer")}>
+                        <Text style={[
+                            styles.topNavText,
+                            { color: theme.colors.tertiary },
+                            userType === "customer" && styles.topNavActive
+                            ]}>Customer</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.topNavSeparator}> | </Text>
+                    <TouchableOpacity onPress={() => setUserType("business")}>
+                        <Text style={[
+                            styles.topNavText,
+                            { color: theme.colors.tertiary },
+                            userType === "business" && styles.topNavActive
+                            ]}>Business</Text>
+                    </TouchableOpacity>
+                </View>
 
-            {/* Input Fields */}
-            <View style={styles.inputContainer}>
-                <TextInput
-                label="Email"
-                mode="outlined"
-                style={styles.input}
-                outlineColor={theme.colors.primary}
-                activeOutlineColor={theme.colors.primary}
-                />
-                <TextInput
-                label="Password"
-                mode="outlined"
-                secureTextEntry
-                style={styles.input}
-                outlineColor={theme.colors.primary}
-                activeOutlineColor={theme.colors.primary}
-                />
-            </View>
+                {/* Logo */}
+                <View style={styles.logoContainer}>
+                    <Image
+                    source={require("@/assets/images/logo_nudge.png")}
+                    style={styles.logo}
+                    />
+                    <Text style={styles.logoText}>Nudge</Text>
+                </View>
 
-            {/* Forgot Password link */}
-            <TouchableOpacity style={styles.forgotPasswordLink}>
-                {/* onPress={() => router.push("/forgot-password")} TODO; add when link to it exists*/}
-                <Text style={[styles.forgotPasswordLinkText, { color: theme.colors.primary }]}>Forgot Password?</Text>
-            </TouchableOpacity>
-
-            {/* Log In Button */}
-            <View style={styles.loginButtonContainer}>
-                <Button
-                    mode="contained"
-                    buttonColor={theme.colors.primary}
-                    labelStyle={styles.loginButtonText}
-                    onPress={() => {}} // TODO: add login logic
+                {/* Sign Up Link */}
+                <View style={[styles.toggleContainer, { borderColor: theme.colors.primary, backgroundColor: theme.colors.onPrimary }]}>
+                    <View style={[styles.toggleButton, { backgroundColor: theme.colors.primary }]}>
+                        <Text style={styles.toggleText}>Log In</Text>
+                    </View>
+                    <TouchableOpacity
+                    style={styles.toggleButton}
+                    onPress={() => userType === "business"
+                        ? router.replace("/sign-up-business")
+                        : router.replace("/sign-up-customer")
+                    }
                     >
-                        Log In
-                </Button>
-            </View>
+                        <Text style={styles.toggleText}>Sign Up</Text>
+                    </TouchableOpacity>
+                </View>
 
-            {/* Bottom Navigation */}
-            <View style={styles.bottomNav}>
-                <Text style={styles.bottomNavText}>Privacy Policy | Terms of Service</Text>
-            </View>
+                {/* Input Fields */}
+                <View style={styles.inputContainer}>
+                    <TextInput
+                    label="Email"
+                    mode="outlined"
+                    style={styles.input}
+                    outlineColor={theme.colors.primary}
+                    activeOutlineColor={theme.colors.primary}
+                    />
+                    <TextInput
+                    label="Password"
+                    mode="outlined"
+                    secureTextEntry
+                    style={styles.input}
+                    outlineColor={theme.colors.primary}
+                    activeOutlineColor={theme.colors.primary}
+                    />
+                </View>
 
+                {/* Forgot Password link */}
+                <TouchableOpacity style={styles.forgotPasswordLink}>
+                    {/* onPress={() => router.push("/forgot-password")} TODO; add when link to it exists*/}
+                    <Text style={[styles.forgotPasswordLinkText, { color: theme.colors.primary }]}>Forgot Password?</Text>
+                </TouchableOpacity>
 
-        </View>
+                {/* Log In Button */}
+                <View style={styles.loginButtonContainer}>
+                    <Button
+                        mode="contained"
+                        buttonColor={theme.colors.primary}
+                        labelStyle={styles.loginButtonText}
+                        style={styles.loginButton}
+                        contentStyle={{ height: 56 }}
+                        onPress={() => {}} // TODO: add login logic
+                        >
+                            Log In
+                    </Button>
+                </View>
+
+                {/* Bottom Navigation */}
+                <View style={styles.bottomNav}>
+                    <Text style={styles.bottomNavText}>Privacy Policy | Terms of Service</Text>
+                </View>
+
+            </ScrollView>
+            </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     );
 }
 
 const styles = StyleSheet.create({
+    scrollContent: {
+        paddingBottom: 100,
+    },
     container: {
         flex: 1,
-        backgroundColor: "#142140",
     },
     topNav: {
         flexDirection: "row",
@@ -101,8 +146,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 24,
     },
     topNavText: {
-        color: "#8E8E93",
-        fontSize: 14,
+        fontSize: 20,
     },
     topNavActive: {
         color: "#ffffff",
@@ -110,11 +154,11 @@ const styles = StyleSheet.create({
     },
     topNavSeparator: {
         color: "#ffffff",
-        fontSize: 14,
+        fontSize: 20,
     },
     logoContainer: {
         alignItems: "center",
-        marginTop: 60,
+        marginTop: 50,
     },
     logo: {
         width: 100,
@@ -129,8 +173,6 @@ const styles = StyleSheet.create({
     },
     toggleContainer: {
         flexDirection: "row",
-        backgroundColor: "#2a3652",
-        borderColor: "#FF6B6B",
         borderWidth: 1,
         borderRadius: 50,
         marginHorizontal: 24,
@@ -138,16 +180,13 @@ const styles = StyleSheet.create({
     },
     toggleButton: {
         flex: 1,
-        paddingVertical: 12,
+        paddingVertical: 16,
         alignItems: "center",
         borderRadius: 50,
     },
-    toggleActive: {
-        backgroundColor: "#FF6B6B",
-    },
     toggleText: {
-        color: "#ffffff",
         fontWeight: "bold",
+        color: "#ffffff",
     },
     inputContainer: {
         marginHorizontal: 24,
@@ -155,7 +194,7 @@ const styles = StyleSheet.create({
         gap: 12,
     },
     input: {
-        backgroundColor: "#142140",
+        height: 56,
     },
     forgotPasswordLink: {
         alignItems: "flex-end",
@@ -163,17 +202,14 @@ const styles = StyleSheet.create({
         marginHorizontal: 24,
     },
     forgotPasswordLinkText: {
-        color: "#FF6B6B",
-        fontSize: 14,
+        fontSize: 16,
     },
     loginButtonContainer: {
         marginHorizontal: 24,
         marginTop: 24,
     },
     loginButton: {
-        backgroundColor: "#FF6B6B",
-        borderRadius: 12,
-        paddingVertical: 6,
+        borderRadius: 12
     },
     loginButtonText: {
         color: "#ffffff",
@@ -181,11 +217,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     bottomNav: {
-        position: "absolute",
-        bottom: 24,
-        left: 0,
-        right: 0,
         alignItems: "center",
+        marginTop: 24,
+        paddingBottom: 24,
     },
     bottomNavText: {
         color: "#ffffff",
