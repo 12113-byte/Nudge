@@ -1,35 +1,51 @@
-import { saveToken } from "../utils/token";
 
-const BASE_URL = "http://localhost:5001";
+const BASE_URL = "http://localhost:5001"; // TODO: replace with env var, needs to be https!
 
-export const login = async (email: string, password: string) => {
-  const res = await fetch(`${BASE_URL}/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
+export type SignUpPayload = {
+  // ? are optional fields
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  company_name?: string;
+  business_email?: string;
+  business_phone?: string;
+  abn?: string;
+}
 
-  const data = await res.json();
+// userType detects if business or customer login
+export const login = async (email: string, password: string, userType: string) => {
+  // picks endpoint based on userType
+  const endpoint = userType === "business"
+    ? `${BASE_URL}/auth/business/login` // confirm with backend for correct endpoints
+    : `${BASE_URL}/auth/customer/login`;
 
-  if (!res.ok) throw new Error(data.message);
+    // sends email and password as JSON
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-  await saveToken(data.token);
+    const data = await res.json(); // potential bug: if server returns non-JSON error response
+  if (!res.ok) throw new Error(data.message || "Login failed");
 
-  return data.user;
-};
+  // TODO: handle token expiry, when backend is ready
+  // if res.status === 401, call logout() and redirect to login
 
-export const signup = async (payload: any) => {
-  const res = await fetch(`${BASE_URL}/signup`, {
+  // token goes to context to save, user to context state
+  return { token: data.token, user: data.user }; // TODO: confirm field names with backend
+  };
+
+export const signup = async (payload: SignUpPayload) => {
+  const res = await fetch(`${BASE_URL}/auth/register`, { // TODO: confirm endpoint with backend
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
 
   const data = await res.json();
+  if (!res.ok) throw new Error(data.message || "Sign up failed");
 
-  if (!res.ok) throw new Error(data.message);
-
-  await saveToken(data.token);
-
-  return data.user;
+  return { token: data.token, user: data.user };
 };

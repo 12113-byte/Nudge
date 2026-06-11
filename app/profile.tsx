@@ -1,3 +1,4 @@
+import { useAuth } from '@/src/context/AuthContext';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
@@ -13,6 +14,8 @@ const ROUTES = {
 
 export default function ProfileScreen() {
   const theme = useTheme();
+
+  const { logout } = useAuth();
 
   const handleCardPress = (routeName: string) => {
     router.push(routeName as any);
@@ -70,7 +73,10 @@ export default function ProfileScreen() {
 
           {/* Log Out Button */}
           <Button mode="contained" buttonColor={theme.colors.primary} 
-          onPress={() => router.replace("/login")}
+          onPress={async () => {
+            await logout(); // delets token from SecureStore, user state gets cleared
+            router.replace("/login");
+          }}
           style={{ width: '100%', borderRadius: 12 }} contentStyle={{ height: 60 }} labelStyle={[styles.logoutText, { color: theme.colors.background }]}>
             <MaterialCommunityIcons name="logout" size={20} color={theme.colors.background} /> Log Out
           </Button>

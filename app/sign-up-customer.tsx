@@ -1,3 +1,5 @@
+import { signup } from "@/src/api/auth";
+import { useAuth } from "@/src/context/AuthContext";
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 import {
@@ -18,7 +20,9 @@ import {
 export default function SignUpCustomerScreen() {
     const theme = useTheme();
 
-        // shared input props across multiple fields
+    const { login } = useAuth();
+
+    // shared input props across multiple fields
     const sharedInputProps = {
         mode: "outlined" as const,
         style: styles.input,
@@ -39,35 +43,22 @@ export default function SignUpCustomerScreen() {
     const passwordRef = useRef<RNTextInput>(null);
     const confirmPasswordRef = useRef<RNTextInput>(null);
 
-    // TODO: clean-up, function should go into helper file
     const handleSignUp = async () => {
-
         if (password !== confirmPassword) {
             alert("Password doesn't match!");
             return;
         }
-
         try {
-            const response = await fetch("http://localhost:5001/auth/register", { // TODO: replace with env varibale/config?
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    first_name: firstName,
-                    last_name: lastName,
-                    email: email,
-                    password: password,
-                }),
+            const { token, user } = await signup({
+                first_name: firstName,
+                last_name: lastName,
+                email: email,
+                password: password,
             });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                setPopUpVisible(true);
-            } else { // TODO: stuling of error pop up
-                alert(data.message || "Something went wrong");
-            }
-        } catch (error) {
-            alert("Could not connect to server");
+            await login(token, user);   // context login
+            setPopUpVisible(true);
+        } catch (error: any) {
+            alert(error.message || "Something went wrong");
         }
     };
 
