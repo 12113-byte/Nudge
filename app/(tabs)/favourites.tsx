@@ -8,7 +8,7 @@ export default function FavouritesScreen() {
   const sourceData = MOCK_FAVOURITES;
 
   return (
-    // Use theme.colors.background directly in the style
+    // Use theme.colors.background directly in the style 4 SAVED SPOTS. CHANGE WITH DB LATER
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <ScrollView contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
@@ -25,9 +25,9 @@ export default function FavouritesScreen() {
               </View>
               <Text variant="titleLarge">Plans you love,</Text>
               <Text variant="titleLarge" style={{ marginBottom: 8 }}>ready when you are.</Text>
-              <Text variant="titleMedium">4 saved spots</Text>
+              <Text variant="titleMedium">4 saved spots</Text> 
             </Card.Content>
-          </Card>
+          </Card> 
         </View>
 
         {sourceData.map((item) => (

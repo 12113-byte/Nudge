@@ -16,7 +16,7 @@ export const MOCK_FAVOURITES = [
         time: "Open until 5pm",
     },
     {
-        business_id: 14,
+        business_id: "14",
         name: "Iron Mikes Premium Karaoke",
         status: "Active",
         rating: "4.9",
