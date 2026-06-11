@@ -20,14 +20,14 @@ export const login = async (email: string, password: string, userType: string) =
     ? `${BASE_URL}/auth/business/login` // confirm with backend for correct endpoints
     : `${BASE_URL}/auth/customer/login`;
 
-    // sends email and password as JSON
-    const res = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+  // sends email and password as JSON
+  const res = await fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
 
-    const data = await res.json(); // potential bug: if server returns non-JSON error response
+  const data = await res.json(); // potential bug: if server returns non-JSON error response
   if (!res.ok) throw new Error(data.message || "Login failed");
 
   // TODO: handle token expiry, when backend is ready
@@ -35,10 +35,14 @@ export const login = async (email: string, password: string, userType: string) =
 
   // token goes to context to save, user to context state
   return { token: data.token, user: data.user }; // TODO: confirm field names with backend
-  };
+};
 
-export const signup = async (payload: SignUpPayload) => {
-  const res = await fetch(`${BASE_URL}/auth/register`, { // TODO: confirm endpoint with backend
+export const signup = async (payload: SignUpPayload, userType: string) => {
+  const endpoint = userType === "business"
+    ? `${BASE_URL}/business/register`
+    : `${BASE_URL}/auth/register`; // TODO: confirm customer endpoint
+
+  const res = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),

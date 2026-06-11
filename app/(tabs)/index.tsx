@@ -22,7 +22,7 @@ import {
 // }
 
 // for testing, to access login screen needs Redirect import
-  export default function Page() {
+export default function Page() {
   return <Redirect href="/login" />;
 }
 

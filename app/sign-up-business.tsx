@@ -41,148 +41,154 @@ export default function SignUpBusinessScreen() {
     const abnRef = useRef<RNTextInput>(null);
     const passwordRef = useRef<RNTextInput>(null);
     const confirmPasswordRef = useRef<RNTextInput>(null);
-    
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'} //makes the phone keyboard not cover fields
-            style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'} //makes the phone keyboard not cover fields
+                style={{ flex: 1 }}
             >
-            <ScrollView
-                style={[styles.container, { backgroundColor: theme.colors.background }]}
-                contentContainerStyle={styles.scrollContent}
-                keyboardShouldPersistTaps="handled"
+                <ScrollView
+                    style={[styles.container, { backgroundColor: theme.colors.background }]}
+                    contentContainerStyle={styles.scrollContent}
+                    keyboardShouldPersistTaps="handled"
                 >
-                {/* Top Navigation */}
-                <View style={styles.topNav}>
-                    <TouchableOpacity onPress={() => router.push("/sign-up-customer")} >
-                        <Text style={[styles.topNavText, { color: theme.colors.tertiary}]}>Customer</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.topNavSeparator}> | </Text>
-                    <TouchableOpacity onPress={() => {}}>
-                        <Text style={[styles.topNavText, styles.topNavActive]}>Business</Text>
-                    </TouchableOpacity>
-                </View>
-
-                {/* Logo */}
-                <View style={styles.logoContainer}>
-                    <Image
-                    source={require("@/assets/images/logo_nudge.png")}
-                    style={styles.logo}
-                    />
-                    <Text style={styles.logoText}>Nudge</Text>
-                </View>
-
-                {/* Log In Link */}
-                <View style={[styles.toggleContainer, { borderColor: theme.colors.primary, backgroundColor: theme.colors.onPrimary }]}>
-                    <TouchableOpacity
-                        style={styles.toggleButton}
-                        onPress={() => router.push({ pathname: "/login", params: { userType: "business" } })} // detects login for business
-                    >
-                        <Text style={styles.toggleText}>Log In</Text>
-                </TouchableOpacity>
-                <View style={[styles.toggleButton, { backgroundColor: theme.colors.primary }]}>
-                        <Text style={styles.toggleText}>Sign Up</Text>
+                    {/* Top Navigation */}
+                    <View style={styles.topNav}>
+                        <TouchableOpacity onPress={() => router.replace("/sign-up-customer")} >
+                            <Text style={[styles.topNavText, { color: theme.colors.tertiary }]}>Customer</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.topNavSeparator}> | </Text>
+                        <TouchableOpacity onPress={() => { }}>
+                            <Text style={[styles.topNavText, styles.topNavActive]}>Business</Text>
+                        </TouchableOpacity>
                     </View>
-                </View>
 
-                {/* Input Fields */}
-                <View style={styles.inputContainer}>
-                    <TextInput
-                        {...sharedInputProps}
-                        label="First Name"
-                        returnKeyType="next"
-                        onSubmitEditing={() => lastNameRef.current?.focus()}
-                        value={firstName}
-                        onChangeText={setFirstName}
-                    />
-                    <TextInput
-                        {...sharedInputProps}
-                        ref={lastNameRef as any}
-                        label="Last Name"
-                        returnKeyType="next"
-                        onSubmitEditing={() => companyNameRef.current?.focus()}
-                        value={lastName}
-                        onChangeText={setLastName}
-                    />
-                    <TextInput
-                        {...sharedInputProps}
-                        ref={companyNameRef as any}
-                        label="Company Name"
-                        returnKeyType="next"
-                        onSubmitEditing={() => businessEmailRef.current?.focus()}
-                        value={companyName}
-                        onChangeText={setCompanyName}
-                    />
-                    <TextInput
-                        {...sharedInputProps}
-                        ref={businessEmailRef as any}
-                        label="Business Email"
-                        returnKeyType="next"
-                        onSubmitEditing={() => businessPhoneRef.current?.focus()}
-                        value={businessEmail}
-                        onChangeText={setBusinessEmail}
-                    />
-                    <TextInput
-                        {...sharedInputProps}
-                        ref={businessPhoneRef as any}
-                        label="Business Phone"
-                        returnKeyType="next"
-                        onSubmitEditing={() => abnRef.current?.focus()}
-                        value={businessPhone}
-                        onChangeText={setBusinessPhone}
-                    />
-                    <TextInput
-                        {...sharedInputProps}
-                        ref={abnRef as any}
-                        label="ABN"
-                        returnKeyType="next"
-                        onSubmitEditing={() => passwordRef.current?.focus()}
-                        value={abn}
-                        onChangeText={setAbn}
-                    />
-                    <TextInput
-                        {...sharedInputProps}
-                        ref={passwordRef as any}
-                        label="Password"
-                        returnKeyType="next"
-                        onSubmitEditing={() => confirmPasswordRef.current?.focus()}
-                        secureTextEntry
-                        value={password}
-                        onChangeText={setPassword}
-                    />
-                    <TextInput
-                        {...sharedInputProps}
-                        ref={confirmPasswordRef as any}
-                        label="Confirm Password"
-                        returnKeyType="done"
-                        // onSubmitEditing={handleSignUp}
-                        secureTextEntry
-                        value={confirmPassword}
-                        onChangeText={setConfirmPassword}
-                    />
-                </View>
+                    {/* Logo */}
+                    <View style={styles.logoContainer}>
+                        <Image
+                            source={require("@/assets/images/logo_nudge.png")}
+                            style={styles.logo}
+                        />
+                        <Text style={styles.logoText}>Nudge</Text>
+                    </View>
 
-                {/* Sign Up Button */}
-                <View style={styles.signUpButtonContainer}>
-                    <Button
-                        mode="contained"
-                        buttonColor={theme.colors.primary}
-                        labelStyle={styles.signUpButtonText}
-                        style={styles.signUpButton}
-                        contentStyle={{ height: 56 }}
-                        onPress={() => {}} // TODO: add handleSignUp function, when connected to backend
+                    {/* Log In Link */}
+                    <View style={[styles.toggleContainer, { borderColor: theme.colors.primary, backgroundColor: theme.colors.onPrimary }]}>
+                        <TouchableOpacity
+                            style={styles.toggleButton}
+                            onPress={() => router.replace({ pathname: "/login", params: { userType: "business" } })} // detects login for business
+                        >
+                            <Text style={styles.toggleText}>Log In</Text>
+                        </TouchableOpacity>
+                        <View style={[styles.toggleButton, { backgroundColor: theme.colors.primary }]}>
+                            <Text style={styles.toggleText}>Sign Up</Text>
+                        </View>
+                    </View>
+
+                    {/* Input Fields */}
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                            {...sharedInputProps}
+                            label="First Name"
+                            returnKeyType="next"
+                            onSubmitEditing={() => lastNameRef.current?.focus()}
+                            value={firstName}
+                            onChangeText={setFirstName}
+                            autoCapitalize="words"
+                        />
+                        <TextInput
+                            {...sharedInputProps}
+                            ref={lastNameRef as any}
+                            label="Last Name"
+                            returnKeyType="next"
+                            onSubmitEditing={() => companyNameRef.current?.focus()}
+                            value={lastName}
+                            onChangeText={setLastName}
+                            autoCapitalize="words"
+                        />
+                        <TextInput
+                            {...sharedInputProps}
+                            ref={companyNameRef as any}
+                            label="Company Name"
+                            returnKeyType="next"
+                            onSubmitEditing={() => businessEmailRef.current?.focus()}
+                            value={companyName}
+                            onChangeText={setCompanyName}
+                            autoCapitalize="words"
+                        />
+                        <TextInput
+                            {...sharedInputProps}
+                            ref={businessEmailRef as any}
+                            label="Business Email"
+                            returnKeyType="next"
+                            onSubmitEditing={() => businessPhoneRef.current?.focus()}
+                            value={businessEmail}
+                            onChangeText={setBusinessEmail}
+                            autoCapitalize="none"
+                        />
+                        <TextInput
+                            {...sharedInputProps}
+                            ref={businessPhoneRef as any}
+                            label="Business Phone"
+                            returnKeyType="next"
+                            onSubmitEditing={() => abnRef.current?.focus()}
+                            value={businessPhone}
+                            onChangeText={setBusinessPhone}
+                        />
+                        <TextInput
+                            {...sharedInputProps}
+                            ref={abnRef as any}
+                            label="ABN"
+                            returnKeyType="next"
+                            onSubmitEditing={() => passwordRef.current?.focus()}
+                            value={abn}
+                            onChangeText={setAbn}
+                        />
+                        <TextInput
+                            {...sharedInputProps}
+                            ref={passwordRef as any}
+                            label="Password"
+                            returnKeyType="next"
+                            onSubmitEditing={() => confirmPasswordRef.current?.focus()}
+                            secureTextEntry
+                            value={password}
+                            onChangeText={setPassword}
+                            autoCapitalize="none"
+                        />
+                        <TextInput
+                            {...sharedInputProps}
+                            ref={confirmPasswordRef as any}
+                            label="Confirm Password"
+                            returnKeyType="done"
+                            // onSubmitEditing={handleSignUp} uncomment when backend is ready
+                            secureTextEntry
+                            value={confirmPassword}
+                            onChangeText={setConfirmPassword}
+                            autoCapitalize="none"
+                        />
+                    </View>
+
+                    {/* Sign Up Button */}
+                    <View style={styles.signUpButtonContainer}>
+                        <Button
+                            mode="contained"
+                            buttonColor={theme.colors.primary}
+                            labelStyle={styles.signUpButtonText}
+                            style={styles.signUpButton}
+                            contentStyle={{ height: 56 }}
+                            // onPress={handleSignUp} uncomment when backend is ready
                         >
                             Create Account
-                    </Button>
-                </View>
+                        </Button>
+                    </View>
 
-                {/* Bottom Navigation */}
-                <View style={styles.bottomNav}>
-                    <Text style={styles.bottomNavText}>Privacy Policy | Terms of Service</Text>
-                </View>
+                    {/* Bottom Navigation */}
+                    <View style={styles.bottomNav}>
+                        <Text style={styles.bottomNavText}>Privacy Policy | Terms of Service</Text>
+                    </View>
 
-            </ScrollView>
+                </ScrollView>
             </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
     );
