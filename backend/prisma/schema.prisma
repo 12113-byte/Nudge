@@ -18,7 +18,6 @@ model User {
   last_name String
   email String @unique
   password_hash String
-  is_owner Boolean @default(false)
   is_admin Boolean @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
