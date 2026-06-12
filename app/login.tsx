@@ -1,3 +1,4 @@
+import { useAuth } from '@/src/context/AuthContext';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -8,7 +9,7 @@ import {
     TouchableOpacity, TouchableWithoutFeedback, View
 } from 'react-native';
 import { Button, TextInput, useTheme } from 'react-native-paper';
-import { login } from "../api/auth";
+import { login as authLogin } from "../src/api/auth";
 
 export default function LoginScreen() {
     const { userType: initalUserType } = useLocalSearchParams(); // detects userType and redirects to correct screen
@@ -18,14 +19,16 @@ export default function LoginScreen() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const { login } = useAuth();
+
     const handleLogin = async () => {
         try {
-            await login(email, password);
-            router.replace("/(tabs)/index"); // confirm route name for home/index?
+            const { token, user } = await authLogin(email, password, userType);
+            await login(token, user); // context login
+            router.replace("/");
             } catch (error: any) {
                 alert(error.message || "Something went wrong");
             }
-        }
     };
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -90,6 +93,8 @@ export default function LoginScreen() {
                     style={styles.input}
                     outlineColor={theme.colors.primary}
                     activeOutlineColor={theme.colors.primary}
+                    value={email}
+                    onChangeText={setEmail}
                     />
                     <TextInput
                     label="Password"
@@ -98,6 +103,8 @@ export default function LoginScreen() {
                     style={styles.input}
                     outlineColor={theme.colors.primary}
                     activeOutlineColor={theme.colors.primary}
+                    value={password}
+                    onChangeText={setPassword}
                     />
                 </View>
 
@@ -115,7 +122,7 @@ export default function LoginScreen() {
                         labelStyle={styles.loginButtonText}
                         style={styles.loginButton}
                         contentStyle={{ height: 56 }}
-                        onPress={() => {}} // TODO: add login logic
+                        onPress={handleLogin}
                         >
                             Log In
                     </Button>
@@ -158,7 +165,7 @@ const styles = StyleSheet.create({
     },
     logoContainer: {
         alignItems: "center",
-        marginTop: 50,
+        marginTop: 60,
     },
     logo: {
         width: 100,
