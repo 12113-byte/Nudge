@@ -95,6 +95,7 @@ export default function LoginScreen() {
                     activeOutlineColor={theme.colors.primary}
                     value={email}
                     onChangeText={setEmail}
+                    autoCapitalize="none"
                     />
                     <TextInput
                     label="Password"
@@ -105,6 +106,8 @@ export default function LoginScreen() {
                     activeOutlineColor={theme.colors.primary}
                     value={password}
                     onChangeText={setPassword}
+                    autoCapitalize="none"
+                    onSubmitEditing={handleLogin}
                     />
                 </View>
 

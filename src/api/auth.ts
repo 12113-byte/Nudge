@@ -28,6 +28,7 @@ export const login = async (email: string, password: string, userType: string) =
   });
 
   const data = await res.json(); // potential bug: if server returns non-JSON error response
+  console.log("Login response:", res.status, data) // TEMP debug
   if (!res.ok) throw new Error(data.message || "Login failed");
 
   // TODO: handle token expiry, when backend is ready
