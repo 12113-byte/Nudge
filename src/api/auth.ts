@@ -17,8 +17,8 @@ export type SignUpPayload = {
 export const login = async (email: string, password: string, userType: string) => {
   // picks endpoint based on userType
   const endpoint = userType === "business"
-    ? `${BASE_URL}/auth/business/login` // confirm with backend for correct endpoints
-    : `${BASE_URL}/auth/customer/login`;
+    ? `${BASE_URL}/auth/login/business` // confirm with backend for correct endpoints
+    : `${BASE_URL}/auth/login`;
 
   // sends email and password as JSON
   const res = await fetch(endpoint, {
