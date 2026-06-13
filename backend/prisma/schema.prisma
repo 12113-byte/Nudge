@@ -45,12 +45,33 @@ model Venue {
 }
 
 
+model Business {
+  id Int @id @default(autoincrement())
+  first_name String
+  last_name String
+  company_name String
+  email String @unique
+  password_hash String
+  address String
+  phone_number String
+  abn String
+  website String
+  about String
+  image_urls String[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+
+
+
+
 /**
 TODO:
 
 Tables:
 OpeningHours
-BusinessUser
+Categories
 
 
 
