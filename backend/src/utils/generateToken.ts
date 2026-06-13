@@ -7,7 +7,6 @@ export const generateToken = (userId: number, res: Response): string => {
   const options: SignOptions = {
     expiresIn: (process.env.JWT_EXPIRES_IN || "7d") as SignOptions["expiresIn"],
   };
-
   const token = jwt.sign(payload, process.env.JWT_SECRET as string, options);
 
   // Set cookie

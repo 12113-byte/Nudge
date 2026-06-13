@@ -1,10 +1,18 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Text, useTheme } from 'react-native-paper';
 
-export default function App() {
+export default function HomeScreen() {
+  const theme = useTheme();
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Hello Team</Text>
+    // Use theme.colors.background directly in the style
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <View style={styles.content}>
+        {/* Use theme.colors.primary and built-in variants */}
+        <Text variant="headlineMedium" style={{ color: theme.colors.primary }}>
+          Hello Team
+        </Text>
+      </View>
     </View>
   );
 }
@@ -12,13 +20,10 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

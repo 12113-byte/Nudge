@@ -1,35 +1,51 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import React from 'react';
-
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { StyleSheet, View } from 'react-native';
+import { useTheme } from 'react-native-paper';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const theme = useTheme();
 
-  return (
+  // eslint-disable-next-line react/display-name
+  const renderTabIcon = (name: string) => ({ color, focused }: { color: string; focused: boolean }) => (
+    <View style={styles.iconContainer}>
+      <Ionicons size={28}
+      name={(focused ? name : `${name}-outline`) as any}
+      color={color} 
+      />
+      {focused && <View style={[styles.activeDot, { backgroundColor: color }]} /> }
+    </View>
+  );
+
+return (
     <Tabs
+    initialRouteName='index'          // app starts with Home Screen
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: theme.colors.tertiary,
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          backgroundColor: theme.colors.onPrimary,
+          borderTopWidth: 0,
+          elevation: 0,
+        },
+      }}
+    >
+      <Tabs.Screen name="explore" options={{ tabBarIcon: renderTabIcon('compass') }} />
+      <Tabs.Screen name="index" options={{ tabBarIcon: renderTabIcon('home') }} />
+      <Tabs.Screen name="favourites" options={{ tabBarIcon: renderTabIcon('heart') }} />
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  iconContainer: { alignItems: 'center', justifyContent: 'center' },
+  activeDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    position: 'absolute',
+    bottom: -10,
+  },
+});

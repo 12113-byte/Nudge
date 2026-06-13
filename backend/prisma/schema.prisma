@@ -20,29 +20,28 @@ model User {
   password_hash String
   is_owner Boolean @default(false)
   is_admin Boolean @default(false)
-  venue Venue?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
 
 // USER -> BOOKINGS -> FAVOURITES -> REVIEWS
 
-model Venue {
-  id Int @id @default(autoincrement())
-  owner User @relation(fields: [owner_id], references: [id])
-  owner_id Int @unique
-  name String
-  email String @unique
-  address String
-  phone_number String
-  website String
-  about String
-  image_urls String[]
-  latitude Float
-  longitude Float
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-}
+// model Venue {
+//   id Int @id @default(autoincrement())
+//   owner User @relation(fields: [owner_id], references: [id])
+//   owner_id Int @unique
+//   name String
+//   email String @unique
+//   address String
+//   phone_number String
+//   website String
+//   about String
+//   image_urls String[]
+//   latitude Float
+//   longitude Float
+//   created_at DateTime @default(now())
+//   updated_at DateTime @updatedAt
+// }
 
 
 model Business {
