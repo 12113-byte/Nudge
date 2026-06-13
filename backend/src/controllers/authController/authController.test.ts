@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockDeep, mockReset } from "vitest-mock-extended";
 import bcrypt from "bcryptjs";
 import { prisma } from "../../config/db.js";
-import { register, login, logout } from "./authController.js"
+import { register, login, logout } from "./authController.js";
 import { generateToken } from "../../utils/generateToken.js";
 
 //mocking our prisma client so we can safely imitate database ops
@@ -14,16 +14,16 @@ vi.mock("../../config/db.js", () => ({
 
 // mock bcrypt so tests don't do real hashing
 vi.mock("bcryptjs", () => ({
-    default: {
-        genSalt: vi.fn().mockResolvedValue("salt"),
-        hash: vi.fn().mockResolvedValue("hashed_password"),
-        compare: vi.fn(),
-    },
+  default: {
+    genSalt: vi.fn().mockResolvedValue("salt"),
+    hash: vi.fn().mockResolvedValue("hashed_password"),
+    compare: vi.fn(),
+  },
 }));
 
 // mock generateToken so tests don't need a real JWT_SECRET
 vi.mock("../../utils/generateToken.js", () => ({
-    generateToken: vi.fn().mockReturnValue("mock_token"),
+  generateToken: vi.fn().mockReturnValue("mock_token"),
 }));
 
 // telling typescript that it's a mock
@@ -49,18 +49,17 @@ describe("register", () => {
     updated_at: new Date(),
   };
 
-
   it("creates a new user and returns token", async () => {
     prismaMock.user.findUnique.mockResolvedValue(null); // no existing user
     prismaMock.user.create.mockResolvedValue(testUser);
 
     const req = httpMocks.createRequest({
-        body: {
-            first_name: "Jane",
-            last_name: "Doe",
-            email: "jane@example.com",
-            password: "jane123",
-        },
+      body: {
+        first_name: "Jane",
+        last_name: "Doe",
+        email: "jane@example.com",
+        password: "jane123",
+      },
     });
     const res = httpMocks.createResponse();
 
@@ -83,26 +82,26 @@ describe("register", () => {
     });
   });
 
-
   it("returns 400 when email already exists", async () => {
     prismaMock.user.findUnique.mockResolvedValue(testUser); // user already exists
 
     const req = httpMocks.createRequest({
-        body: {
-            first_name: "Jane",
-            last_name: "Doe",
-            email: "jane@example.com",
-            password: "jane123",
-        },
+      body: {
+        first_name: "Jane",
+        last_name: "Doe",
+        email: "jane@example.com",
+        password: "jane123",
+      },
     });
     const res = httpMocks.createResponse();
 
     await register(req, res, () => {});
 
     expect(res.statusCode).toBe(400);
-    expect(res._getJSONData()).toEqual({ error: "User already exists with this email" });
+    expect(res._getJSONData()).toEqual({
+      error: "User already exists with this email",
+    });
   });
-
 
   it("calls next() when prisma throws an unexpected error", async () => {
     prismaMock.user.findUnique.mockImplementation(() => {
@@ -151,8 +150,8 @@ describe("login", () => {
     vi.mocked(bcrypt.compare).mockResolvedValue(true as never);
 
     //create a fake request and response with valid request data
-    const req = httpMocks.createRequest({ 
-        body: { email: "jane@example.com", password: "jane123" } 
+    const req = httpMocks.createRequest({
+      body: { email: "jane@example.com", password: "jane123" },
     });
     const res = httpMocks.createResponse();
 
@@ -162,22 +161,21 @@ describe("login", () => {
     expect(res.statusCode).toBe(200);
     expect(res._getJSONData()).toEqual({
       status: "success",
-      data: { 
+      data: {
         user: {
           id: testUser.id,
           email: testUser.email,
         },
-       },
-       token: "mock_token",
+      },
+      token: "mock_token",
     });
   });
-
 
   it("returns 401 when no user not found", async () => {
     prismaMock.user.findUnique.mockResolvedValue(null);
 
-    const req = httpMocks.createRequest({ 
-        body: { email: "nobody@example.com", password: "jane123" } 
+    const req = httpMocks.createRequest({
+      body: { email: "nobody@example.com", password: "jane123" },
     });
     const res = httpMocks.createResponse();
 
@@ -191,8 +189,8 @@ describe("login", () => {
     prismaMock.user.findUnique.mockResolvedValue(testUser);
     vi.mocked(bcrypt.compare).mockResolvedValue(false as never);
 
-    const req = httpMocks.createRequest({ 
-        body: { email: "jane@example.com", password: "wrongpassword" } 
+    const req = httpMocks.createRequest({
+      body: { email: "jane@example.com", password: "wrongpassword" },
     });
     const res = httpMocks.createResponse();
 
@@ -207,7 +205,9 @@ describe("login", () => {
       throw new Error("DB error");
     });
 
-    const req = httpMocks.createRequest({ body: { email: "jane@example.com", password: "jane123" } });
+    const req = httpMocks.createRequest({
+      body: { email: "jane@example.com", password: "jane123" },
+    });
     const res = httpMocks.createResponse();
     const next = vi.fn();
 
@@ -216,7 +216,6 @@ describe("login", () => {
     expect(next).toHaveBeenCalledWith(expect.any(Error));
   });
 });
-
 
 // ─── logout ────────────────────────────────────────────────────
 

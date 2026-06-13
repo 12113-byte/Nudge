@@ -2,7 +2,7 @@ import httpMocks from "node-mocks-http";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockDeep, mockReset } from "vitest-mock-extended";
 import { prisma } from "../../config/db.js";
-import { getProfile, updateProfile } from "./userController.js"
+import { getProfile, updateProfile } from "./userController.js";
 
 //mocking our prisma client so we can safely imitate database ops
 vi.mock("../../config/db.js", () => ({
@@ -49,7 +49,6 @@ describe("getProfile", () => {
       },
     });
   });
-
 
   it("returns 401 when no user on request", async () => {
     const req = httpMocks.createRequest();
@@ -105,7 +104,6 @@ describe("updateProfile", () => {
     });
   });
 
-
   it("returns 401 when no user on request", async () => {
     const req = httpMocks.createRequest({ body: { first_name: "Updated" } });
     const res = httpMocks.createResponse();
@@ -140,13 +138,17 @@ describe("updateProfile", () => {
       throw duplicateError;
     });
 
-    const req = httpMocks.createRequest({ body: { email: "taken@example.com" } });
+    const req = httpMocks.createRequest({
+      body: { email: "taken@example.com" },
+    });
     req.user = testUser;
     const res = httpMocks.createResponse();
     const next = vi.fn();
 
     await updateProfile(req, res, next);
 
-    expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: "P2002" }));
+    expect(next).toHaveBeenCalledWith(
+      expect.objectContaining({ code: "P2002" })
+    );
   });
 });

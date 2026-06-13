@@ -1,12 +1,11 @@
 import express, { Application } from "express";
 import { config } from "dotenv";
 import { connectDB, disconnectDB } from "./config/db.js";
-import errorHandler from './middleware/errorHandler.js';
-
+import errorHandler from "./middleware/errorHandler.js";
 
 // Import Routes
-import userRoutes from './routes/userRoutes.js';
-import authRoutes from './routes/authRoutes.js';
+import userRoutes from "./routes/userRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 config();
 connectDB();
@@ -23,35 +22,34 @@ app.use("/auth", authRoutes);
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5001;
 const server = app.listen(PORT, () => {
-    console.log(`Server running on PORT ${PORT}`);
+  console.log(`Server running on PORT ${PORT}`);
 });
 
 // Handle unhandled promise rejections (e.g., database connection errors)
 process.on("unhandledRejection", (err: Error) => {
-    console.error("Unhandled Rejection:", err);
-    server.close(async () => {
-        await disconnectDB();
-        process.exit(1);
-    });
+  console.error("Unhandled Rejection:", err);
+  server.close(async () => {
+    await disconnectDB();
+    process.exit(1);
+  });
 });
 
 // Handle uncaught exceptions
 process.on("uncaughtException", async (err: Error) => {
-    console.error("Uncaught Exception:", err);
-    server.close(async () => {
-        await disconnectDB();
-        process.exit(1);
-    });
+  console.error("Uncaught Exception:", err);
+  server.close(async () => {
+    await disconnectDB();
+    process.exit(1);
+  });
 });
 
 // Graceful shutdown
 process.on("SIGTERM", () => {
-    console.log("SIGTERM received, shutting down gracefully");
-    server.close(async () => {
-        await disconnectDB();
-        process.exit(0);
-    });
+  console.log("SIGTERM received, shutting down gracefully");
+  server.close(async () => {
+    await disconnectDB();
+    process.exit(0);
+  });
 });
-
 
 app.use(errorHandler);
