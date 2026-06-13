@@ -197,7 +197,7 @@ npx vitest --coverage
 q
 ```
 
-**Refer to /Nudge/backend/src/controllers/venueController/venueController.test.ts for structure example**
+**Refer to /Nudge/backend/src/controllers/businessController/businessController.test.ts for structure example**
 
 ## Tech Stack
 

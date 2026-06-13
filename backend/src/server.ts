@@ -7,7 +7,6 @@ import errorHandler from "./middleware/errorHandler.js";
 import authRoutes from "./routes/authRoutes.js";
 import businessRoutes from "./routes/businessRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
-import venueRoutes from "./routes/venueRoutes.js";
 
 config();
 connectDB();
@@ -21,7 +20,6 @@ app.use(express.urlencoded({ extended: true }));
 // API Routes
 app.use("/users", userRoutes);
 app.use("/auth", authRoutes);
-app.use("/venues", venueRoutes);
 app.use("/business", businessRoutes);
 
 app.use(errorHandler);

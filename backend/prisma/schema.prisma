@@ -26,24 +26,6 @@ model User {
 
 // USER -> BOOKINGS -> FAVOURITES -> REVIEWS
 
-// model Venue {
-//   id Int @id @default(autoincrement())
-//   owner User @relation(fields: [owner_id], references: [id])
-//   owner_id Int @unique
-//   name String
-//   email String @unique
-//   address String
-//   phone_number String
-//   website String
-//   about String
-//   image_urls String[]
-//   latitude Float
-//   longitude Float
-//   created_at DateTime @default(now())
-//   updated_at DateTime @updatedAt
-// }
-
-
 model Business {
   id Int @id @default(autoincrement())
   first_name String
@@ -60,19 +42,3 @@ model Business {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
-
-
-
-
-
-/**
-TODO:
-
-Tables:
-OpeningHours
-Categories
-
-
-
-Validations:
-*/
