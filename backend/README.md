@@ -58,7 +58,7 @@ Open pgAdmin, expand your server in the left panel, right-click on **Databases**
 npx prisma migrate dev
 ```
 
-This creates the `User` table in your database.
+This creates all the tables in your database.
 
 **6. Generate the Prisma client**
 
@@ -76,7 +76,7 @@ Server runs on `http://localhost:5001`
 
 ---
 
-## Testing with Postman
+## Endpoints
 
 **Register a user**
 
@@ -103,6 +103,68 @@ Server runs on `http://localhost:5001`
 {
   "email": "alex@example.com",
   "password": "password123"
+}
+```
+
+**Business Register**
+
+- Method `POST`
+- URL: `http://localhost:5001/business/register`
+- Body (raw JSON):
+
+```json
+{
+  "first_name": "John",
+  "last_name": "Smith",
+  "company_name": "Bowling 4 You",
+  "email": "coolguybowling1@example.com",
+  "password": "password",
+  "phone_number": "123456",
+  "address": "100, Collins St, Melbourne",
+  "abn": "123456778",
+  "website": "www.bowling.com",
+  "about": "The best bowling you'll ever experience",
+  "image_urls": []
+}
+```
+
+**Business login**
+
+- Method: `POST`
+- URL: `http://localhost:5001/business/login`
+- Body (raw JSON):
+
+```json
+{
+  "email": "coolguybowling@example.com",
+  "password": "password"
+}
+```
+
+**Get all businesses**
+
+- Method `GET`
+- URL: `http://localhost:5001/business/`
+- No body
+
+**Get business by id**
+
+- Method `GET`
+- URL: `http://localhost:5001/business/:id`
+- No body
+
+**Update business**
+
+- Method `PATCH`
+- URL: `http://localhost:5001/business/profile`
+- Body (raw JSON):
+
+```json
+{
+  "id": 1,
+  "updateData": {
+    "field_to_update": "new value"
+  }
 }
 ```
 

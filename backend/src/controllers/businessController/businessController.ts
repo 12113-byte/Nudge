@@ -76,6 +76,53 @@ const createBusiness = async (
   }
 };
 
+const loginBusiness = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  console.log("Attempting to login");
+  const { email, password } = req.body as { email: string; password: string };
+
+  try {
+    // Check if business email exists in the table
+    const business = await prisma.business.findUnique({
+      where: { email },
+    });
+
+    if (!business) {
+      throw new Error("Invalid email no business found");
+    }
+    console.log("business id is ", business.id);
+
+    // Verify Password
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      business.password_hash,
+    );
+
+    if (!isPasswordValid) {
+      throw new Error("Invalid password");
+    }
+
+    // Generate JWT Token
+    const token = generateToken(business.id, res);
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        business: {
+          id: business.id,
+          email: business.email,
+        },
+      },
+      token,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const getAllBusinesses = async (
   req: Request,
   res: Response,
@@ -182,7 +229,13 @@ const updateBusiness = async (
   }
 };
 
-export { createBusiness, getAllBusinesses, getBusinessById, updateBusiness };
+export {
+  createBusiness,
+  getAllBusinesses,
+  getBusinessById,
+  loginBusiness,
+  updateBusiness
+};
 
 //TODO
-//add jwt authentication to the update and delete endpoints
+//add jwt authentication to the update delete endpoints

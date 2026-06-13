@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import httpMocks from "node-mocks-http";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockDeep, mockReset } from "vitest-mock-extended";
@@ -7,6 +8,7 @@ import {
   createBusiness,
   getAllBusinesses,
   getBusinessById,
+  loginBusiness,
   updateBusiness,
 } from "./businessController.js";
 
@@ -19,6 +21,8 @@ vi.mock("../../config/db.js", () => ({
 vi.mock("../../utils/generateToken.js", () => ({
   generateToken: vi.fn(),
 }));
+
+vi.mock("bcrypt");
 
 describe("businessController", () => {
   //basic test data for reusability
@@ -50,9 +54,15 @@ describe("businessController", () => {
     image_urls: [],
   };
 
+  const testBusinessLoginDetails = {
+    email: "bowling1@gmail.com",
+    password: "password",
+  };
+
   //reset db before each test
   beforeEach(() => {
     mockReset(prisma);
+    mockReset(generateToken);
   });
 
   describe("createBusiness", () => {
@@ -162,6 +172,7 @@ describe("businessController", () => {
       expect(resJsonData).toHaveProperty("data");
       expect(responseData).toHaveProperty("allBusinesses");
 
+      //currently returning
       expect(responseData.allBusinesses[0]).toHaveProperty("id");
       expect(responseData.allBusinesses[0]).toHaveProperty("company_name");
       expect(responseData.allBusinesses[0]).toHaveProperty("email");
@@ -172,6 +183,7 @@ describe("businessController", () => {
       expect(responseData.allBusinesses[0]).toHaveProperty("about");
       expect(responseData.allBusinesses[0]).toHaveProperty("image_urls");
 
+      //currently not returning
       expect(responseData.allBusinesses[0]).not.toHaveProperty("first_name");
       expect(responseData.allBusinesses[0]).not.toHaveProperty("last_name");
       expect(responseData.allBusinesses[0]).not.toHaveProperty("created_at");
@@ -226,6 +238,7 @@ describe("businessController", () => {
       //verify that the response is what we're expecting it to be
       expect(res.statusCode).toBe(200);
 
+      //currently returning
       expect(responseData).toHaveProperty("id");
       expect(responseData).toHaveProperty("company_name");
       expect(responseData).toHaveProperty("email");
@@ -236,6 +249,7 @@ describe("businessController", () => {
       expect(responseData).toHaveProperty("about");
       expect(responseData).toHaveProperty("image_urls");
 
+      //currently not returning
       expect(responseData).not.toHaveProperty("first_name");
       expect(responseData).not.toHaveProperty("last_name");
       expect(responseData).not.toHaveProperty("created_at");
@@ -301,6 +315,7 @@ describe("businessController", () => {
 
       expect(res.statusCode).toBe(200);
 
+      //check that the value was updated
       expect(responseData.company_name).toEqual("Bowling 2");
 
       //currently returning
@@ -322,8 +337,6 @@ describe("businessController", () => {
       expect(responseData).not.toHaveProperty("password_hash");
     });
 
-    //it calls the next function if no business id
-    //it calls the next function if invalid update data
     it("Calls the next() (error handler) when no business found", async () => {
       prisma.business.update.mockRejectedValue(
         new Error("No business found with id: 999"),
@@ -345,6 +358,74 @@ describe("businessController", () => {
       expect(next).toHaveBeenCalledWith(
         new Error("No business found with id: 999"),
       );
+    });
+  });
+
+  describe("loginBusiness", () => {
+    it("Can login to business account", async () => {
+      prisma.business.findUnique.mockResolvedValue({
+        ...testBusinessReturn,
+        id: 1,
+        created_at: new Date("2026-06-11T12:00:00Z"),
+        updated_at: new Date("2026-06-11T12:00:00Z"),
+      });
+
+      vi.spyOn(bcrypt, "compare").mockResolvedValue(true);
+
+      //create a fake request and response with valid request data
+      const req = httpMocks.createRequest({ body: testBusinessLoginDetails });
+      const res = httpMocks.createResponse();
+
+      generateToken.mockReturnValue("this is login token");
+
+      await loginBusiness(req, res, () => {});
+
+      const resJsonData = await res._getJSONData();
+
+      const responseData = resJsonData.data;
+
+      //verify that the response is what we're expecting it to be
+      expect(res.statusCode).toBe(200);
+
+      expect(responseData.business).toHaveProperty("id");
+      expect(responseData.business).toHaveProperty("email");
+
+      expect(resJsonData.token).toEqual("this is login token");
+    });
+
+    it("Handles invalid email address when logging in", async () => {
+      prisma.business.findUnique.mockResolvedValue(null);
+
+      const req = httpMocks.createRequest();
+      const res = httpMocks.createResponse();
+      const next = vi.fn();
+
+      await loginBusiness(req, res, next);
+
+      expect(next).toHaveBeenCalledTimes(1);
+      expect(next).toHaveBeenCalledWith(
+        new Error("Invalid email no business found"),
+      );
+    });
+
+    it("Handles invalid password when logging in", async () => {
+      prisma.business.findUnique.mockResolvedValue({
+        ...testBusinessReturn,
+        id: 1,
+        created_at: new Date("2026-06-11T12:00:00Z"),
+        updated_at: new Date("2026-06-11T12:00:00Z"),
+      });
+
+      vi.spyOn(bcrypt, "compare").mockResolvedValue(false);
+
+      const req = httpMocks.createRequest();
+      const res = httpMocks.createResponse();
+      const next = vi.fn();
+
+      await loginBusiness(req, res, next);
+
+      expect(next).toHaveBeenCalledTimes(1);
+      expect(next).toHaveBeenCalledWith(new Error("Invalid password"));
     });
   });
 });
