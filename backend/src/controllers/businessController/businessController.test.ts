@@ -7,6 +7,7 @@ import {
   createBusiness,
   getAllBusinesses,
   getBusinessById,
+  updateBusiness,
 } from "./businessController.js";
 
 //mocking our prisma client so we can safely imitate database ops
@@ -27,6 +28,20 @@ describe("businessController", () => {
     last_name: "Smith",
     email: "bowling1@gmail.com",
     password: "password",
+    address: "100 Collins St, Melbourne",
+    phone_number: "123456",
+    abn: "51824753556",
+    website: "www.bowling1.com",
+    about: "So goodnkknknekn",
+    image_urls: [],
+  };
+
+  const testBusinessReturn = {
+    company_name: "Bowling 1",
+    first_name: "John",
+    last_name: "Smith",
+    email: "bowling1@gmail.com",
+    password_hash: "password",
     address: "100 Collins St, Melbourne",
     phone_number: "123456",
     abn: "51824753556",
@@ -124,7 +139,7 @@ describe("businessController", () => {
       //mock what prisma.business.findMany will return in getAllBusinesses()
       prisma.business.findMany.mockResolvedValue([
         {
-          ...testBusiness,
+          ...testBusinessReturn,
           id: 1,
           created_at: new Date("2026-06-11T12:00:00Z"),
           updated_at: new Date("2026-06-11T12:00:00Z"),
@@ -137,21 +152,31 @@ describe("businessController", () => {
 
       await getAllBusinesses(req, res, () => {});
 
+      const resJsonData = await res._getJSONData();
+
+      const responseData = resJsonData.data;
+
       //verify that the response is what we're expecting it to be
       expect(res.statusCode).toBe(200);
-      expect(res._getJSONData()).toEqual({
-        status: "success",
-        data: {
-          allBusinesses: [
-            {
-              ...testBusiness,
-              id: 1,
-              created_at: "2026-06-11T12:00:00.000Z",
-              updated_at: "2026-06-11T12:00:00.000Z",
-            },
-          ],
-        },
-      });
+      expect(resJsonData).toHaveProperty("status");
+      expect(resJsonData).toHaveProperty("data");
+      expect(responseData).toHaveProperty("allBusinesses");
+
+      expect(responseData.allBusinesses[0]).toHaveProperty("id");
+      expect(responseData.allBusinesses[0]).toHaveProperty("company_name");
+      expect(responseData.allBusinesses[0]).toHaveProperty("email");
+      expect(responseData.allBusinesses[0]).toHaveProperty("address");
+      expect(responseData.allBusinesses[0]).toHaveProperty("phone_number");
+      expect(responseData.allBusinesses[0]).toHaveProperty("abn");
+      expect(responseData.allBusinesses[0]).toHaveProperty("website");
+      expect(responseData.allBusinesses[0]).toHaveProperty("about");
+      expect(responseData.allBusinesses[0]).toHaveProperty("image_urls");
+
+      expect(responseData.allBusinesses[0]).not.toHaveProperty("first_name");
+      expect(responseData.allBusinesses[0]).not.toHaveProperty("last_name");
+      expect(responseData.allBusinesses[0]).not.toHaveProperty("created_at");
+      expect(responseData.allBusinesses[0]).not.toHaveProperty("updated_at");
+      expect(responseData.allBusinesses[0]).not.toHaveProperty("password_hash");
     });
 
     it("Calls the next() error handler when no businesses found", async () => {
@@ -171,23 +196,26 @@ describe("businessController", () => {
   describe("getBusinessesById", () => {
     it("Can get Business by id", async () => {
       //mock what prisma.business.findUnique will return in getBusinessById()
-      prisma.business.findUnique.mockResolvedValue([
-        {
-          ...testBusiness,
-          id: 1,
-          created_at: new Date("2026-06-11T12:00:00Z"),
-          updated_at: new Date("2026-06-11T12:00:00Z"),
-        },
-      ]);
+      prisma.business.findUnique.mockResolvedValue({
+        ...testBusinessReturn,
+        id: 1,
+        created_at: new Date("2026-06-11T12:00:00Z"),
+        updated_at: new Date("2026-06-11T12:00:00Z"),
+      });
 
       //create a fake request and response with valid request data
       const req = httpMocks.createRequest({
         method: "GET",
+        url: "/business/1",
         params: { id: 1 },
       });
       const res = httpMocks.createResponse();
 
       await getBusinessById(req, res, () => {});
+
+      const resJsonData = await res._getJSONData();
+
+      const responseData = resJsonData.data;
 
       expect(prisma.business.findUnique).toHaveBeenCalledWith({
         where: {
@@ -197,19 +225,22 @@ describe("businessController", () => {
 
       //verify that the response is what we're expecting it to be
       expect(res.statusCode).toBe(200);
-      expect(res._getJSONData()).toEqual({
-        status: "success",
-        data: {
-          business: [
-            {
-              ...testBusiness,
-              id: 1,
-              created_at: "2026-06-11T12:00:00.000Z",
-              updated_at: "2026-06-11T12:00:00.000Z",
-            },
-          ],
-        },
-      });
+
+      expect(responseData).toHaveProperty("id");
+      expect(responseData).toHaveProperty("company_name");
+      expect(responseData).toHaveProperty("email");
+      expect(responseData).toHaveProperty("address");
+      expect(responseData).toHaveProperty("phone_number");
+      expect(responseData).toHaveProperty("abn");
+      expect(responseData).toHaveProperty("website");
+      expect(responseData).toHaveProperty("about");
+      expect(responseData).toHaveProperty("image_urls");
+
+      expect(responseData).not.toHaveProperty("first_name");
+      expect(responseData).not.toHaveProperty("last_name");
+      expect(responseData).not.toHaveProperty("created_at");
+      expect(responseData).not.toHaveProperty("updated_at");
+      expect(responseData).not.toHaveProperty("password_hash");
     });
 
     it("Calls the next() (error handler) when no business found", async () => {
@@ -238,13 +269,85 @@ describe("businessController", () => {
   });
 
   describe("updateBusiness", () => {
-    it("Can update business", async () => {});
+    it("Can update business", async () => {
+      prisma.business.update.mockResolvedValue({
+        ...testBusiness,
+        company_name: "Bowling 2",
+        id: 1,
+        created_at: new Date(),
+        updated_at: new Date(),
+      });
+
+      const updateData = { name: "Bowling 2" };
+
+      const req = httpMocks.createRequest({
+        method: "PATCH",
+        body: { id: 1, updateData },
+      });
+
+      const res = httpMocks.createResponse();
+
+      await updateBusiness(req, res, () => {});
+
+      const resJsonData = await res._getJSONData();
+
+      const responseData = resJsonData.data;
+      expect(prisma.business.update).toHaveBeenCalledWith({
+        where: {
+          id: 1,
+        },
+        data: updateData,
+      });
+
+      expect(res.statusCode).toBe(200);
+
+      expect(responseData.company_name).toEqual("Bowling 2");
+
+      //currently returning
+      expect(responseData).toHaveProperty("id");
+      expect(responseData).toHaveProperty("company_name");
+      expect(responseData).toHaveProperty("email");
+      expect(responseData).toHaveProperty("address");
+      expect(responseData).toHaveProperty("phone_number");
+      expect(responseData).toHaveProperty("abn");
+      expect(responseData).toHaveProperty("website");
+      expect(responseData).toHaveProperty("about");
+      expect(responseData).toHaveProperty("image_urls");
+
+      //currently not returning
+      expect(responseData).not.toHaveProperty("first_name");
+      expect(responseData).not.toHaveProperty("last_name");
+      expect(responseData).not.toHaveProperty("created_at");
+      expect(responseData).not.toHaveProperty("updated_at");
+      expect(responseData).not.toHaveProperty("password_hash");
+    });
 
     //it calls the next function if no business id
     //it calls the next function if invalid update data
+    it("Calls the next() (error handler) when no business found", async () => {
+      prisma.business.update.mockRejectedValue(
+        new Error("No business found with id: 999"),
+      );
+
+      const updateData = { name: "Bowling 2" };
+
+      const req = httpMocks.createRequest({
+        method: "PATCH",
+        body: { id: 999, updateData },
+      });
+
+      const res = httpMocks.createResponse();
+      const next = vi.fn();
+
+      await updateBusiness(req, res, next);
+
+      expect(next).toHaveBeenCalledTimes(1);
+      expect(next).toHaveBeenCalledWith(
+        new Error("No business found with id: 999"),
+      );
+    });
   });
 });
 
 //TODO
-// update happy, sad
 //delete happy, sad

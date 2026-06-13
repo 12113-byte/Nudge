@@ -1,7 +1,9 @@
 import bcrypt from "bcryptjs";
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../config/db.js";
+import { Business } from "../../generated/prisma/client.js";
 import { generateToken } from "../../utils/generateToken.js";
+import { SafeBusinessReturnData } from "./businessController.types.js";
 
 const createBusiness = async (
   req: Request,
@@ -80,16 +82,31 @@ const getAllBusinesses = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const allBusinesses = await prisma.business.findMany();
+    const allBusinesses: Business[] = await prisma.business.findMany();
 
     if (!allBusinesses) {
       throw new Error("No businesses found");
     }
 
+    const businessesData: SafeBusinessReturnData[] = allBusinesses.map(
+      (business: Business) => {
+        const {
+          first_name,
+          last_name,
+          password_hash,
+          created_at,
+          updated_at,
+          ...businessDataToReturn
+        } = business;
+
+        return businessDataToReturn;
+      },
+    );
+
     res.status(200).json({
       status: "success",
       data: {
-        allBusinesses,
+        allBusinesses: businessesData,
       },
     });
   } catch (err) {
@@ -106,7 +123,7 @@ const getBusinessById = async (
     //convert string to number
     const businessId = Number(req.params.id);
 
-    const business = await prisma.business.findUnique({
+    const business: Business | null = await prisma.business.findUnique({
       where: {
         id: businessId,
       },
@@ -116,18 +133,56 @@ const getBusinessById = async (
       throw new Error(`No business found with id: ${businessId}`);
     }
 
+    const {
+      first_name,
+      last_name,
+      password_hash,
+      created_at,
+      updated_at,
+      ...businessDataToReturn
+    } = business;
+
     res.status(200).json({
       status: "success",
-      data: {
-        business,
-      },
+      data: businessDataToReturn,
     });
   } catch (err) {
     next(err);
   }
 };
 
-export { createBusiness, getAllBusinesses, getBusinessById };
+const updateBusiness = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { updateData, id } = req.body;
+
+  try {
+    const updatedBusiness = await prisma.business.update({
+      where: { id },
+      data: updateData,
+    });
+
+    const {
+      first_name,
+      last_name,
+      password_hash,
+      created_at,
+      updated_at,
+      ...businessDataToReturn
+    } = updatedBusiness;
+
+    res.status(200).json({
+      status: "success",
+      data: businessDataToReturn,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export { createBusiness, getAllBusinesses, getBusinessById, updateBusiness };
 
 //TODO
 //add jwt authentication to the update and delete endpoints
